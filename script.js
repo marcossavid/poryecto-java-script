@@ -3,10 +3,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const addTaskButton = document.getElementById('add-task');
     const taskList = document.getElementById('task-list');
 
-    // Load tasks from local storage
+  
     loadTasks();
 
-    // Add task event
+    // Evento para agregar tarea
     addTaskButton.addEventListener('click', function() {
         const taskValue = taskInput.value.trim();
         if (taskValue) {
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
         saveTasks();
     }
 
-    // Save tasks to local storage
+    // Guardar tareas en el almacenamiento local
     function saveTasks() {
         const tasks = [];
         taskList.querySelectorAll('li').forEach(li => {
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
-    // Load tasks from local storage
+    // Cargar tareas desde el almacenamiento local
     function loadTasks() {
         const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         tasks.forEach(task => {
