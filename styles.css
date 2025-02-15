@@ -111,3 +111,30 @@ body {
     margin: 16px;
     border-radius: 2px;
 }
+
+/* Contenedor del selector de color y su texto */
+.color-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+   
+}
+
+/* Texto "Color de fondo" */
+.color-label {
+    margin-right: 10px;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+/* Estilo del selector de color */
+.color-picker {
+    cursor: pointer;
+}
+
+.custom-color-picker-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: inline-block;
+}
