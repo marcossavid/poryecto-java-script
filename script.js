@@ -65,26 +65,38 @@ document.addEventListener("DOMContentLoaded", function () {
         saveLists();
     }
 
-    // Función para añadir una nueva tarea
-    function addTask(taskList, taskText) {
-        if (taskText.trim() === "") return;
+  // Función para añadir una nueva tarea
+function addTask(taskList, taskText) {
+    if (taskText.trim() === "") return;
 
-        const taskItem = document.createElement("li");
-        taskItem.textContent = taskText;
+    const taskItem = document.createElement("li");
 
-        const deleteTaskButton = document.createElement("button");
-        deleteTaskButton.textContent = "Eliminar";
-        deleteTaskButton.classList.add("delete-task");
-        deleteTaskButton.addEventListener("click", () => {
-            taskItem.remove();
-            saveLists();
-        });
+    // Contenedor para el texto de la tarea
+    const taskTextContainer = document.createElement("div");
+    taskTextContainer.classList.add("task-text");
+    taskTextContainer.textContent = taskText;
 
-        taskItem.appendChild(deleteTaskButton);
-        taskList.appendChild(taskItem);
+    // Contenedor para el botón de eliminar
+    const deleteButtonContainer = document.createElement("div");
+    deleteButtonContainer.classList.add("delete-button-container");
+
+    const deleteTaskButton = document.createElement("button");
+    deleteTaskButton.textContent = "Eliminar";
+    deleteTaskButton.classList.add("delete-task");
+    deleteTaskButton.addEventListener("click", () => {
+        taskItem.remove();
         saveLists();
-    }
+    });
 
+    deleteButtonContainer.appendChild(deleteTaskButton);
+
+    // Añadir los contenedores dentro de la tarea
+    taskItem.appendChild(taskTextContainer);
+    taskItem.appendChild(deleteButtonContainer);
+    taskList.appendChild(taskItem);
+
+    saveLists();
+}
     // Guardar todas las listas en localStorage
     function saveLists() {
         const listsData = Array.from(listsContainer.children).map(list => ({

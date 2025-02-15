@@ -24,6 +24,9 @@ body {
     border-radius: 8px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     overflow-y: auto;
+   
+    overflow-y: auto; /* Agrega scroll si el contenido es muy largo */
+    word-break: break-word;
 }
 
 .list-header {
@@ -33,7 +36,7 @@ body {
 }
 
 .delete-list {
-    background: red;
+    background:  rgb(202, 28, 28);
     color: white;
     border-radius: 2px;
     border: none;
@@ -48,12 +51,13 @@ body {
 }
 
 .add-task {
-    background: rgb(56, 56, 224);
+    background:rgb(56, 56, 224);
     color: white;
     border: none;
     padding: 5px;
     cursor: pointer;
     margin: 16px;
+    border-radius: 2px;
 }
 
 .task-items {
@@ -68,11 +72,42 @@ body {
     padding: 5px;
     margin: 5px 0;
     border-radius: 5px;
+    display: flex;
+    align-items: center;
+    display: block; /* Asegura que el texto ocupe toda la línea */
+    word-break: break-word; /* Fuerza el corte de palabras largas */
+    overflow-wrap: break-word; /* Permite que el texto se ajuste */
+    white-space: normal; /* Permite saltos de línea */
+   
+    max-width: 100%; /* Evita que se desborde */
 }
 
 .delete-task {
-    background: red;
+    background: rgb(202, 28, 28);
     color: white;
     border: none;
     cursor: pointer;
+    margin-left: 10px; /* Separa el botón del texto */
+    border-radius: 2px;
+
+}
+.task-text {
+    flex: 1; /* El texto ocupará todo el espacio disponible */
+    padding-right: 10px; /* Espacio entre el texto y el botón */
+
+}
+
+.delete-button-container {
+    display: flex;
+    justify-content: flex-end; /* Alinea el botón de eliminar a la derecha */
+}
+
+.add-listp {
+    background: rgb(56, 56, 224);
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    margin: 16px;
+    border-radius: 2px;
 }
