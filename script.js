@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadLists(); // Cargar listas guardadas al iniciar
     loadCategories();
-    let draggedItem = null;
+
+    
 
     // Evento para añadir una nueva lista
     addListButton.addEventListener("click", () => {
@@ -32,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
             saveCategories();
         }
     });
+
 
     // Función para crear una nueva lista
     function addList(title, tasks = [], color = "##f4f4f4", categoryId = null) { // Color predeterminado gris
@@ -59,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
         
        
-       // Contenedor para el selector de color y el texto
+       // Contenedor para el SELECTOR DE COLOR y el texto
         const colorContainer = document.createElement("div");
         colorContainer.classList.add("color-container");
 
@@ -117,7 +119,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const taskList = document.createElement("ul");
         taskList.classList.add("task-items");
 
-        // Cargar tareas preexistentes si hay
+
+
+
+
+
+        // CARGAR TAREAS PREEXISTENTES
+        
         tasks.forEach(task => addTask(taskList, task));
         
 
@@ -134,6 +142,8 @@ document.addEventListener("DOMContentLoaded", function () {
         list.appendChild(taskList);
         listsContainer.appendChild(list);
 
+
+
           
         // Si hay una categoría seleccionada, asignar la lista a esa categoría
    
@@ -147,33 +157,31 @@ document.addEventListener("DOMContentLoaded", function () {
         saveLists();
     }
 
- 
 
-// Función para añadir una nueva tarea
+
+// CREAR TAREA
 function addTask(taskList, taskText) {
     if (taskText.trim() === "") return;
 
+    // Crear un nuevo elemento de tarea
     const taskItem = document.createElement("li");
     taskItem.classList.add("task-item");
 
-    // Contenedor PRINCIPAL PADRE que incluirá el texto y los botones
+    // Contenedor para la tarea que contendrá tanto el texto como los botones
     const taskContainer = document.createElement("div");
     taskContainer.classList.add("task-container");
-    taskContainer.setAttribute("draggable", "true");
 
     // Contenedor para el texto de la tarea
     const taskTextContainer = document.createElement("div");
     taskTextContainer.classList.add("task-text");
     taskTextContainer.textContent = taskText;
+    taskTextContainer.setAttribute("draggable", "true");  // El texto será draggable
 
-    // Contenedor padre de botones
-    const contenedorPadre = document.createElement("div");
-    contenedorPadre.classList.add("contenedor-padre");
+    // Contenedor para los botones (Eliminar y Hecho)
+    const buttonsContainer = document.createElement("div");
+    buttonsContainer.classList.add("buttons-container");
 
-    // Contenedor para el botón de eliminar
-    const deleteButtonContainer = document.createElement("div");
-    deleteButtonContainer.classList.add("delete-button-container");
-
+    // Botón de eliminar
     const deleteTaskButton = document.createElement("button");
     deleteTaskButton.textContent = "Eliminar";
     deleteTaskButton.classList.add("delete-task");
@@ -182,47 +190,42 @@ function addTask(taskList, taskText) {
         saveLists();
     });
 
-    deleteButtonContainer.appendChild(deleteTaskButton);
-
-    // Contenedor para el botón de hecho
-    const hechoButtonContainer = document.createElement("div");
-    hechoButtonContainer.classList.add("hecho-button-container");
-
+    // Botón de hecho
     const hechoTaskButton = document.createElement("button");
     hechoTaskButton.textContent = "Hecho";
     hechoTaskButton.classList.add("hecho-task");
     hechoTaskButton.addEventListener("click", () => {
-        taskTextContainer.style.textDecoration = "line-through"; // Solo tacha el texto de la tarea
-        taskTextContainer.style.color = "#a0a0a0";
+        taskTextContainer.style.textDecoration = "line-through"; // Tacha el texto
+        taskTextContainer.style.color = "#a0a0a0"; // Cambia el color del texto
         saveLists();
     });
 
-    hechoButtonContainer.appendChild(hechoTaskButton);
+    // Agregar los botones al contenedor de botones
+    buttonsContainer.appendChild(deleteTaskButton);
+    buttonsContainer.appendChild(hechoTaskButton);
 
-    // Agregar los botones al contenedor padre
-    contenedorPadre.appendChild(deleteButtonContainer);
-    contenedorPadre.appendChild(hechoButtonContainer);
-
-    // Agregar elementos al contenedor principal
+    // Agregar el texto de la tarea y los botones al contenedor principal
     taskContainer.appendChild(taskTextContainer);
-    taskContainer.appendChild(contenedorPadre);
+    taskContainer.appendChild(buttonsContainer);  // Los botones se mantienen estáticos
 
     // Agregar el contenedor de tarea al taskItem
     taskItem.appendChild(taskContainer);
     taskList.appendChild(taskItem);
 
-    // Eventos de Drag and Drop en el contenedor principal
-    taskContainer.addEventListener("dragstart", (e) => {
+
+    // Eventos de Drag and Drop solo para el texto
+    taskTextContainer.addEventListener("dragstart", (e) => {
         draggedItem = taskItem;
         setTimeout(() => taskItem.classList.add("dragging"), 0);
     });
 
-    taskContainer.addEventListener("dragend", () => {
-        draggedItem.classList.remove("dragging");
+    taskTextContainer.addEventListener("dragend", () => {
+        taskItem.classList.remove("dragging");
         draggedItem = null;
         saveLists();
     });
 
+    // Permite el arrastre sobre la lista
     taskList.addEventListener("dragover", (e) => {
         e.preventDefault(); // Permite soltar elementos aquí
         const afterElement = getDragAfterElement(taskList, e.clientY);
@@ -235,7 +238,6 @@ function addTask(taskList, taskText) {
 
     function getDragAfterElement(container, y) {
         const draggableElements = [...container.querySelectorAll(".task-item:not(.dragging)")];
-
         return draggableElements.reduce((closest, child) => {
             const box = child.getBoundingClientRect();
             const offset = y - box.top - box.height / 2;
@@ -245,6 +247,9 @@ function addTask(taskList, taskText) {
 
     saveLists();
 }
+
+
+
 
   // Crear una nueva categoría
   function addCategory(name) {
@@ -280,13 +285,14 @@ function addTask(taskList, taskText) {
 }
 
 
-  // Guardar todas las listas en localStorage
-  function saveLists() {
+// Guardar todas las listas en localStorage
+function saveLists() {
     const listsData = Array.from(listsContainer.children).map(list => ({
         title: list.querySelector("h3").textContent,
-        tasks: Array.from(list.querySelectorAll("li")).map(task =>
-            task.firstChild.textContent.trim()
-        ),
+        tasks: Array.from(list.querySelectorAll(".task-item")).map(task => {
+            const taskText = task.querySelector(".task-text").textContent.trim();
+            return taskText;  // Solo guardamos el texto de la tarea
+        }),
         color: list.style.backgroundColor,
         categoryId: list.closest(".category")?.id || null  // Guardamos el id de la categoría si existe
     }));
