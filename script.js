@@ -1,20 +1,37 @@
 document.addEventListener("DOMContentLoaded", function () {
     const listsContainer = document.getElementById("lists-container");
     const addListButton = document.getElementById("add-list");
+    const categoryInput = document.getElementById('category-input');
+    const addCategorySubmit = document.getElementById('add-category-button');
+    const categoriesContainer = document.getElementById('categories');
+    const addCategoryButton = document.getElementById('add-category');
+    
 
     loadLists(); // Cargar listas guardadas al iniciar
+    loadCategories();
 
     // Evento para añadir una nueva lista
     addListButton.addEventListener("click", () => {
         const listTitle = prompt("Nombre de la nueva lista:");
         if (listTitle) {
-            addList(listTitle);
+            const categoryId = prompt("Selecciona una categoría ID (opcional):"); // Opción de seleccionar una categoría
+            addList(listTitle, [], "##f4f4f4", categoryId);  // Pasar categoryId aquí
             saveLists();
         }
     });
 
+     // Evento para añadir una nueva categoría
+     addCategoryButton.addEventListener("click", () => {
+        const categoryName = prompt("Nombre de la nueva categoría:");
+        if (categoryName) {
+            addCategory(categoryName);
+            saveCategories();
+        }
+    });
+
     // Función para crear una nueva lista
-    function addList(title, tasks = [], color = "##f4f4f4") { // Color predeterminado gris
+    function addList(title, tasks = [], color = "##f4f4f4", categoryId = null) { // Color predeterminado gris
+
         const list = document.createElement("div");
         list.classList.add("task-list");
         list.style.backgroundColor = color;  // Asigna el color de fondo (puede ser el predeterminado o uno personalizado)
@@ -35,7 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         listHeader.appendChild(listTitle);
         listHeader.appendChild(deleteButton);
-
+        
+        
        
        // Contenedor para el selector de color y el texto
         const colorContainer = document.createElement("div");
@@ -58,10 +76,10 @@ document.addEventListener("DOMContentLoaded", function () {
         colorPicker.style.display = "none";  // Ocultar el input de tipo color
 
         // Establecer un fondo de imagen en el contenedor para que se vea como un selector
-        colorPickerContainer.style.backgroundImage = `url('imgs/sdr.png')`; // Coloca la ruta de tu imagen
-        colorPickerContainer.style.backgroundSize = "cover";  // Asegúrate de que la imagen cubra el área
-        colorPickerContainer.style.width = "30px";  // Ancho del contenedor
-        colorPickerContainer.style.height = "30px"; // Alto del contenedor
+        colorPickerContainer.style.backgroundImage = `url('imgs/sdr.png')`; 
+        colorPickerContainer.style.backgroundSize = "cover";  // Asegurar de que la imagen cubra el área
+        colorPickerContainer.style.width = "30px";  
+        colorPickerContainer.style.height = "30px"; 
         colorPickerContainer.style.cursor = "pointer"; // Establecer que el contenedor sea clickeable
 
         // Agregar el evento para mostrar el input tipo color cuando se hace clic en el contenedor
@@ -89,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
         taskInput.classList.add("task-input");
 
         const addTaskButton = document.createElement("button");
-        addTaskButton.textContent = "Agregar";
+        addTaskButton.textContent = "Agregar tarea";
         addTaskButton.classList.add("add-task");
 
         const taskList = document.createElement("ul");
@@ -111,8 +129,22 @@ document.addEventListener("DOMContentLoaded", function () {
         list.appendChild(taskList);
         listsContainer.appendChild(list);
 
+          
+        // Si hay una categoría seleccionada, asignar la lista a esa categoría
+   
+        if (categoryId) {
+            const category = document.getElementById(categoryId);
+            category.querySelector(".category-lists").appendChild(list);
+        } else {
+            listsContainer.appendChild(list); // Si no hay categoría, agregarla al contenedor principal
+        }
+
         saveLists();
     }
+
+ 
+
+  
 
   // Función para añadir una nueva tarea
 function addTask(taskList, taskText) {
@@ -146,22 +178,80 @@ function addTask(taskList, taskText) {
 
     saveLists();
 }
-     // Guardar todas las listas en localStorage
-     function saveLists() {
-        const listsData = Array.from(listsContainer.children).map(list => ({
-            title: list.querySelector("h3").textContent,
-            tasks: Array.from(list.querySelectorAll("li")).map(task => 
-                task.firstChild.textContent.trim()
-            ),
-            color: list.style.backgroundColor  // Guardamos el color de fondo
-        }));
 
-        localStorage.setItem("lists", JSON.stringify(listsData));
-    }
 
-    // Cargar listas desde localStorage
-    function loadLists() {
-        const savedLists = JSON.parse(localStorage.getItem("lists")) || [];
-        savedLists.forEach(list => addList(list.title, list.tasks, list.color)); // Cargamos el color también
-    }
+
+  // Crear una nueva categoría
+  function addCategory(name) {
+    const category = document.createElement("div");
+    category.classList.add("category");
+    category.setAttribute("id", `category-${Date.now()}`);
+
+    const categoryHeader = document.createElement("div");
+    categoryHeader.classList.add("category-header");
+
+    const categoryTitle = document.createElement("h3");
+    categoryTitle.textContent = name;
+
+    const deleteCategoryButton = document.createElement("button");
+    deleteCategoryButton.textContent = "X";
+    deleteCategoryButton.classList.add("delete-category");
+    deleteCategoryButton.addEventListener("click", () => {
+        category.remove();
+        saveCategories();
+    });
+
+    categoryHeader.appendChild(categoryTitle);
+    categoryHeader.appendChild(deleteCategoryButton);
+
+    const categoryLists = document.createElement("div");
+    categoryLists.classList.add("category-lists");
+
+    category.appendChild(categoryHeader);
+    category.appendChild(categoryLists);
+    categoriesContainer.appendChild(category);
+
+    saveCategories();
+}
+
+
+  // Guardar todas las listas en localStorage
+  function saveLists() {
+    const listsData = Array.from(listsContainer.children).map(list => ({
+        title: list.querySelector("h3").textContent,
+        tasks: Array.from(list.querySelectorAll("li")).map(task =>
+            task.firstChild.textContent.trim()
+        ),
+        color: list.style.backgroundColor,
+        categoryId: list.closest(".category")?.id || null  // Guardamos el id de la categoría si existe
+    }));
+
+    localStorage.setItem("lists", JSON.stringify(listsData));
+}
+
+// Cargar listas desde localStorage
+function loadLists() {
+    const savedLists = JSON.parse(localStorage.getItem("lists")) || [];
+    savedLists.forEach(list => {
+        addList(list.title, list.tasks, list.color, list.categoryId);
+    });
+}
+
+// Guardar todas las categorías en localStorage
+
+function saveCategories() {
+    const categoriesData = Array.from(categoriesContainer.children).map(category => ({
+        name: category.querySelector("h3").textContent
+    }));
+
+    localStorage.setItem("categories", JSON.stringify(categoriesData));
+}
+// Cargar categorías desde localStorage
+function loadCategories() {
+    const savedCategories = JSON.parse(localStorage.getItem("categories")) || [];
+    savedCategories.forEach(category => addCategory(category.name));
+}
+
+
+
 });
