@@ -20,7 +20,7 @@ body {
 .task-list {
     width: 300px;
     height: 500px;
-    background: #f4f4f4;
+    background: #e6e6e6;
     padding: 16px;
     border-radius: 8px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
@@ -101,9 +101,33 @@ body {
 
 }
 
+.contenedor-padre {
+    width: 100%;
+    height: 25px;
+    background-color: #e6e6e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .delete-button-container {
     display: flex;
     justify-content: flex-end; /* Alinea el botón de eliminar a la derecha */
+}
+
+.hecho-button-container {
+    display: flex;
+    justify-content: flex-end; /* Alinea el botón de eliminar a la derecha */
+}
+
+.hecho-task {
+    background: rgb(28, 202, 54);
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px; /* Separa el botón del texto */
+    border-radius: 4px;
+
 }
 
 .add-listp {
@@ -138,7 +162,7 @@ body {
 }
 
 .custom-color-picker-container {
-    border: 1px solid #ccc;
+    border: 1px;
     border-radius: 5px;
     display: inline-block;
 }
@@ -154,14 +178,14 @@ body {
     top: 0;
     width: 250px;
     height: 100%;
-    background-color: #f4f4f4;
+    background-color: #e6e6e6;
     padding: 10px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     display: flex; /* Usamos Flexbox para alinear las categorías */
     flex-wrap: wrap; /* Permitimos que las categorías se envuelvan a la siguiente fila si es necesario */
     gap: 20px; /* Espacio entre las categorías */
     justify-content: center; /* Alineamos*/
-    border: 2px solid #f4f4f4; /* Esto te ayudará a ver el contenedor */
+    border: 2px solid #e6e6e6; /* Esto te ayudará a ver el contenedor */
     align-content: start;
   }
   
@@ -169,7 +193,7 @@ body {
     display: block;
     margin-bottom: 20px;
     height: 50px;
-    width: 200px;
+    width: 100%;
     padding: 10px;
     background-color: #4CAF50;
     color: white;
@@ -185,6 +209,7 @@ body {
     flex-direction: column;
     color: black;
     position: relative;
+    
   }
   
 

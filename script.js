@@ -157,6 +157,11 @@ function addTask(taskList, taskText) {
     taskTextContainer.classList.add("task-text");
     taskTextContainer.textContent = taskText;
 
+    //contenedor padre de botones
+    const contenedorPadre = document.createElement("div");
+contenedorPadre.classList.add("contenedor-padre");
+
+
     // Contenedor para el botón de eliminar
     const deleteButtonContainer = document.createElement("div");
     deleteButtonContainer.classList.add("delete-button-container");
@@ -171,10 +176,28 @@ function addTask(taskList, taskText) {
 
     deleteButtonContainer.appendChild(deleteTaskButton);
 
+     // Contenedor para el botón de hecho
+     const hechoButtonContainer = document.createElement("div");
+     deleteButtonContainer.classList.add("hecho-button-container");
+ 
+     const hechoTaskButton = document.createElement("button");
+     hechoTaskButton.textContent = "Hecho";
+     hechoTaskButton.classList.add("hecho-task");
+     hechoTaskButton.addEventListener("click", () => {
+         taskTextContainer.style.textDecoration = "line-through"; // Solo tacha el texto de la tarea
+         saveLists();
+     });
+ 
+     hechoButtonContainer.appendChild(hechoTaskButton);
+
     // Añadir los contenedores dentro de la tarea
     taskItem.appendChild(taskTextContainer);
     taskItem.appendChild(deleteButtonContainer);
     taskList.appendChild(taskItem);
+    taskItem.appendChild(hechoButtonContainer);
+    contenedorPadre.appendChild(deleteButtonContainer);
+    contenedorPadre.appendChild(hechoButtonContainer);
+    taskItem.appendChild(contenedorPadre);
 
     saveLists();
 }
