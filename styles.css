@@ -1,61 +1,78 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
 }
+
 
 .container {
-    max-width: 600px;
+    width: 90%;
     margin: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
     text-align: center;
 }
 
-input {
-    width: calc(100% - 90px);
-    padding: 10px;
-    margin-right: 10px;
+#lists-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 16px;
 }
 
-button {
-    padding: 10px;
-    background-color: #3498db;
-    border: none;
+.task-list {
+    width: 300px;
+    height: 500px;
+    background: #f4f4f4;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-list {
+    background: red;
     color: white;
+    border-radius: 2px;
+    border: none;
+    padding: 5px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #5dade2; /* Color más claro en hover */
+.task-input {
+    width: 90%;
+    padding: 5px;
+    margin: 5px 0;
 }
 
-ul {
+.add-task {
+    background: rgb(56, 56, 224);
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    margin: 16px;
+}
+
+.task-items {
     list-style: none;
     padding: 0;
 }
 
-li {
+.task-items li {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #eaeaea;
+    background: white;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 5px;
 }
 
-.completed {
-    text-decoration: line-through;
-    color: gray;
-}
-
-li button {
-    background: transparent;
+.delete-task {
+    background: red;
+    color: white;
     border: none;
-    color: red;
     cursor: pointer;
 }

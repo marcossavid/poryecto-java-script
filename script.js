@@ -1,75 +1,105 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const taskInput = document.getElementById("task-input");
-    const addTaskButton = document.getElementById("add-task");
-    const taskList = document.getElementById("task-list");
+    const listsContainer = document.getElementById("lists-container");
+    const addListButton = document.getElementById("add-list");
 
-    loadTasks(); // Cargar las tareas guardadas al iniciar la página
+    loadLists(); // Cargar listas guardadas al iniciar
 
-    // Evento para agregar tarea con el botón
-    addTaskButton.addEventListener("click", () => addTaskFromInput());
-
-    // Permitir agregar tarea con la tecla Enter
-    taskInput.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
-            addTaskFromInput();
+    // Evento para añadir una nueva lista
+    addListButton.addEventListener("click", () => {
+        const listTitle = prompt("Nombre de la nueva lista:");
+        if (listTitle) {
+            addList(listTitle);
+            saveLists();
         }
     });
 
-    // Función para obtener el valor del input y agregar una nueva tarea
-    function addTaskFromInput() {
-        const taskValue = taskInput.value.trim(); // Se elimina espacios en blanco al inicio y al final
-        if (taskValue) {
-            addTask(taskValue, false); // Se agrega la tarea sin marcar como completada
-            taskInput.value = ""; // Se limpia el campo de entrada después de agregar la tarea
-            saveTasks(); // Se guarda la lista actualizada en localStorage
-        }
-    }
+    // Función para crear una nueva lista
+    function addList(title, tasks = []) {
+        const list = document.createElement("div");
+        list.classList.add("task-list");
 
-    // Función para crear y agregar una nueva tarea a la lista
-    function addTask(taskText, isCompleted) {
-        const li = document.createElement("li"); // Se crea un elemento <li>
-        li.textContent = taskText; // Se asigna el texto de la tarea
+        const listHeader = document.createElement("div");
+        listHeader.classList.add("list-header");
 
-        // Si la tarea estaba marcada como completada, se agrega la clase "completed"
-        if (isCompleted) {
-            li.classList.add("completed");
-        }
+        const listTitle = document.createElement("h3");
+        listTitle.textContent = title;
 
-        // Evento para marcar o desmarcar la tarea como completada al hacer clic
-        li.addEventListener("click", () => {
-            li.classList.toggle("completed"); // Alterna la clase "completed"
-            saveTasks(); // Guarda el estado de la tarea en localStorage
-        });
-
-        // Se crea un botón para eliminar la tarea
         const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Eliminar";
-
-        // Evento para eliminar la tarea al hacer clic en el botón
-        deleteButton.addEventListener("click", (e) => {
-            e.stopPropagation(); // Evita que se active el evento de marcar como completada
-            li.remove(); // Se elimina la tarea de la lista
-            saveTasks(); // Se actualiza la lista en localStorage
+        deleteButton.textContent = "X";
+        deleteButton.classList.add("delete-list");
+        deleteButton.addEventListener("click", () => {
+            list.remove();
+            saveLists();
         });
 
-        li.appendChild(deleteButton); // Se agrega el botón de eliminar dentro del <li>
-        taskList.appendChild(li); // Se agrega la tarea a la lista (<ul>)
+        listHeader.appendChild(listTitle);
+        listHeader.appendChild(deleteButton);
+
+        const taskInput = document.createElement("input");
+        taskInput.type = "text";
+        taskInput.placeholder = "Agregar una tarea...";
+        taskInput.classList.add("task-input");
+
+        const addTaskButton = document.createElement("button");
+        addTaskButton.textContent = "Agregar";
+        addTaskButton.classList.add("add-task");
+
+        const taskList = document.createElement("ul");
+        taskList.classList.add("task-items");
+
+        // Cargar tareas preexistentes si hay
+        tasks.forEach(task => addTask(taskList, task));
+
+        addTaskButton.addEventListener("click", () => {
+            addTask(taskList, taskInput.value);
+            taskInput.value = "";
+            saveLists();
+        });
+
+        list.appendChild(listHeader);
+        list.appendChild(taskInput);
+        list.appendChild(addTaskButton);
+        list.appendChild(taskList);
+        listsContainer.appendChild(list);
+
+        saveLists();
     }
 
-    // Función para guardar las tareas en localStorage
-    function saveTasks() {
-        // Se recorre la lista de tareas y se crea un array con sus datos
-        const tasks = Array.from(taskList.children).map((li) => ({
-            text: li.childNodes[0].textContent, // Se obtiene el texto de la tarea
-            completed: li.classList.contains("completed"), // Se verifica si está completada
+    // Función para añadir una nueva tarea
+    function addTask(taskList, taskText) {
+        if (taskText.trim() === "") return;
+
+        const taskItem = document.createElement("li");
+        taskItem.textContent = taskText;
+
+        const deleteTaskButton = document.createElement("button");
+        deleteTaskButton.textContent = "Eliminar";
+        deleteTaskButton.classList.add("delete-task");
+        deleteTaskButton.addEventListener("click", () => {
+            taskItem.remove();
+            saveLists();
+        });
+
+        taskItem.appendChild(deleteTaskButton);
+        taskList.appendChild(taskItem);
+        saveLists();
+    }
+
+    // Guardar todas las listas en localStorage
+    function saveLists() {
+        const listsData = Array.from(listsContainer.children).map(list => ({
+            title: list.querySelector("h3").textContent,
+            tasks: Array.from(list.querySelectorAll("li")).map(task => 
+                task.firstChild.textContent.trim()
+            )
         }));
 
-        localStorage.setItem("tasks", JSON.stringify(tasks)); // Se guarda en localStorage
+        localStorage.setItem("lists", JSON.stringify(listsData));
     }
 
-    // Función para cargar las tareas guardadas en localStorage
-    function loadTasks() {
-        const tasks = JSON.parse(localStorage.getItem("tasks")) || []; // Se obtiene el array de tareas o un array vacío si no hay datos
-        tasks.forEach((task) => addTask(task.text, task.completed)); // Se agregan las tareas a la lista
+    // Cargar listas desde localStorage
+    function loadLists() {
+        const savedLists = JSON.parse(localStorage.getItem("lists")) || [];
+        savedLists.forEach(list => addList(list.title, list.tasks));
     }
 });
