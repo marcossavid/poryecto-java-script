@@ -268,3 +268,9 @@ body {
     border-radius: 4px;
     margin-top: 10px;
 }
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

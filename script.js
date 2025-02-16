@@ -170,14 +170,27 @@ function addTask(taskList, taskText) {
     });
 
     // Botón de hecho
-    const hechoTaskButton = document.createElement("button");
-    hechoTaskButton.textContent = "Hecho";
-    hechoTaskButton.classList.add("hecho-task");
-    hechoTaskButton.addEventListener("click", () => {
-        taskTextContainer.style.textDecoration = "line-through"; // Tacha el texto
-        taskTextContainer.style.color = "#a0a0a0"; // Cambia el color del texto
+    const hechoTaskButton = document.createElement('button');
+    hechoTaskButton.textContent = 'Hecho';
+    hechoTaskButton.classList.add('hecho-task');
+
+    // Estado inicial de la tarea
+    taskTextContainer.dataset.done = "false"; //dataset representa le estado del item
+
+    hechoTaskButton.addEventListener('click', () => {
+        if (taskTextContainer.dataset.done === "false") {
+            taskTextContainer.style.textDecoration = 'line-through'; // Tacha el texto
+            taskTextContainer.style.color = '#a0a0a0'; // Cambia el color del texto
+            taskTextContainer.dataset.done = "true"; // Cambia el estado
+        } else {
+            taskTextContainer.style.textDecoration = 'none'; // Restaura el texto
+            taskTextContainer.style.color = ''; // Vuelve al color original
+            taskTextContainer.dataset.done = "false"; // Cambia el estado
+        }
+        
         saveLists();
     });
+
 
     // Agregar los botones al contenedor de botones
     buttonsContainer.appendChild(deleteTaskButton);
@@ -226,38 +239,57 @@ function addTask(taskList, taskText) {
     saveLists();
 }
 
+    
     // Función para crear una nueva categoría
     function addCategory(name) {
-        const category = document.createElement("div");
-        category.classList.add("category");
-        category.setAttribute("id", `category-${Date.now()}`);
+        const category = document.createElement('div');
+        category.classList.add('category');
+        const categoryId = `category-${Date.now()}`;
+        category.setAttribute('id', categoryId);
 
-        const categoryHeader = document.createElement("div");
-        categoryHeader.classList.add("category-header");
+        // Contenedor para el título y el botón
+        const categoryHeader = document.createElement('div');
+        categoryHeader.classList.add('category-header'); // Puedes agregar estilos en CSS
 
-        const categoryTitle = document.createElement("h3");
+        const categoryTitle = document.createElement('h3');
         categoryTitle.textContent = name;
 
-        const deleteCategoryButton = document.createElement("button");
-        deleteCategoryButton.textContent = "X";
-        deleteCategoryButton.classList.add("delete-category");
-        deleteCategoryButton.addEventListener("click", () => {
+        // Crear el botón de eliminar categoría dentro de la cabecera
+        const deleteCategoryButton = document.createElement('button');
+        deleteCategoryButton.textContent = 'X';
+        deleteCategoryButton.classList.add('delete-category');
+        deleteCategoryButton.addEventListener('click', (event) => {
+            event.stopPropagation();  // Evitar que se active el evento de mostrar las listas al hacer clic
             category.remove();
             saveCategories();
         });
 
+        // Agregar el título y el botón al contenedor de cabecera
         categoryHeader.appendChild(categoryTitle);
         categoryHeader.appendChild(deleteCategoryButton);
 
-        const categoryLists = document.createElement("div");
-        categoryLists.classList.add("category-lists");
-
+        // Agregar la cabecera a la categoría
         category.appendChild(categoryHeader);
-        category.appendChild(categoryLists);
-        categoriesContainer.appendChild(category);
 
-        saveCategories();
-    }
+        // Contenedor de listas dentro de la categoría
+        const categoryLists = document.createElement('div');
+        categoryLists.classList.add('category-lists');
+        category.appendChild(categoryLists);
+
+        // Evento para mostrar las listas de la categoría
+        category.addEventListener('click', () => {
+            const allLists = document.querySelectorAll('.task-list');
+            allLists.forEach(list => {
+                if (list.dataset.categoryId === categoryId) {
+                    listsContainer.appendChild(list);  
+                }
+            });
+        });
+
+    categoriesContainer.appendChild(category);
+}
+
+
 
     // Guardar todas las listas en localStorage
     function saveLists() {
