@@ -8,30 +8,25 @@
 </head>
 <body>
 
-   
-
     <div class="container">
         <h1>Gestor de Listas de Tareas</h1>
         <button id="add-list" class="add-listp">Crear una nueva lista</button>
         <div id="lists-container"></div>
     </div>
 
+    <!-- CATEGORÍAS -->
 
-<!--CATEGORIAS-->
+    <div id="category-sidebar">
+        <div id="add-category">Agregar Categoría</div>
+        <div id="categories">
+            <!-- Las categorías se agregarán aquí dinámicamente -->
+        </div>
 
-
-<div id="category-sidebar">
-    <div id="add-category">Agregar Categoría</div>
-    <div id="categories">
-        <!-- Las categorías se agregarán aquí dinámicamente -->
+        <!-- Formulario para agregar categoría -->
+        <input type="text" id="category-input" placeholder="Escribe el nombre de la categoría" style="display: none;">
+        <button id="add-category-button" style="display: none;">Agregar</button>
     </div>
-    <!-- Formulario para agregar categoría -->
-    <input type="text" id="category-input" placeholder="Escribe el nombre de la categoría" style="display: none;">
-    <button id="add-category-button" style="display: none;" >Agregar</button>
-</div>
     
-
-
     <script src="script.js"></script>
 </body>
 </html>

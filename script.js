@@ -6,15 +6,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const categoriesContainer = document.getElementById('categories');
     const addCategoryButton = document.getElementById('add-category');
     
+
+
+    
     loadLists(); // Cargar listas guardadas al iniciar
     loadCategories();
-
+    
     // Evento para añadir una nueva lista
     addListButton.addEventListener("click", () => {
         const listTitle = prompt("Nombre de la nueva lista:");
         if (listTitle) {
-            const categoryId = prompt("Selecciona una categoría ID (opcional):"); // Opción de seleccionar una categoría
-            addList(listTitle, [], "#f4f4f4", categoryId);  // Pasar categoryId aquí
+            addList(listTitle, [], "#f4f4f4"); // Eliminamos la opción de categoría
             saveLists();
         }
     });
@@ -241,50 +243,47 @@ function addTask(taskList, taskText) {
 
     
     // Función para crear una nueva categoría
-    function addCategory(name) {
-        const category = document.createElement('div');
-        category.classList.add('category');
-        const categoryId = `category-${Date.now()}`;
-        category.setAttribute('id', categoryId);
+function addCategory(name) {
+    const category = document.createElement('div');
+    category.classList.add('category');
+    const categoryId = `category-${Date.now()}`;
+    category.setAttribute('id', categoryId);
 
-        // Contenedor para el título y el botón
-        const categoryHeader = document.createElement('div');
-        categoryHeader.classList.add('category-header'); // Puedes agregar estilos en CSS
+    // Contenedor para el título y el botón
+    const categoryHeader = document.createElement('div');
+    categoryHeader.classList.add('category-header'); // Puedes agregar estilos en CSS
 
-        const categoryTitle = document.createElement('h3');
-        categoryTitle.textContent = name;
+    const categoryTitle = document.createElement('h3');
+    categoryTitle.textContent = name;
 
-        // Crear el botón de eliminar categoría dentro de la cabecera
-        const deleteCategoryButton = document.createElement('button');
-        deleteCategoryButton.textContent = 'X';
-        deleteCategoryButton.classList.add('delete-category');
-        deleteCategoryButton.addEventListener('click', (event) => {
-            event.stopPropagation();  // Evitar que se active el evento de mostrar las listas al hacer clic
-            category.remove();
-            saveCategories();
-        });
+    // Crear el botón de eliminar categoría dentro de la cabecera
+    const deleteCategoryButton = document.createElement('button');
+    deleteCategoryButton.textContent = 'X';
+    deleteCategoryButton.classList.add('delete-category');
+    deleteCategoryButton.addEventListener('click', (event) => {
+        event.stopPropagation();  // Evitar que se active el evento de mostrar las listas al hacer clic
+        category.remove();
+        saveCategories();
+    });
 
-        // Agregar el título y el botón al contenedor de cabecera
-        categoryHeader.appendChild(categoryTitle);
-        categoryHeader.appendChild(deleteCategoryButton);
+    // Agregar el título y el botón al contenedor de cabecera
+    categoryHeader.appendChild(categoryTitle);
+    categoryHeader.appendChild(deleteCategoryButton);
 
-        // Agregar la cabecera a la categoría
-        category.appendChild(categoryHeader);
+    // Agregar la cabecera a la categoría
+    category.appendChild(categoryHeader);
 
-        // Contenedor de listas dentro de la categoría
-        const categoryLists = document.createElement('div');
-        categoryLists.classList.add('category-lists');
-        category.appendChild(categoryLists);
+    // Contenedor de listas dentro de la categoría
+    const categoryLists = document.createElement('div');
+    categoryLists.classList.add('category-lists');
+    category.appendChild(categoryLists);
 
-        // Evento para mostrar las listas de la categoría
-        category.addEventListener('click', () => {
-            const allLists = document.querySelectorAll('.task-list');
-            allLists.forEach(list => {
-                if (list.dataset.categoryId === categoryId) {
-                    listsContainer.appendChild(list);  
-                }
-            });
-        });
+    // Evento para mostrar las listas de la categoría y redirigir a la página correspondiente
+    category.addEventListener('click', () => {
+        const categoryName = categoryTitle.textContent;
+        // Redirigir a la página de la categoría
+        window.location.href = `category.html?category=${encodeURIComponent(categoryName)}`;
+    });
 
     categoriesContainer.appendChild(category);
 }
@@ -308,12 +307,16 @@ function addTask(taskList, taskText) {
 
     // Cargar listas desde localStorage
     function loadLists() {
-        const savedLists = JSON.parse(localStorage.getItem("lists")) || [];
-        savedLists.forEach(list => {
-            addList(list.title, list.tasks, list.color, list.categoryId);
-        });
+        try {
+            const savedLists = JSON.parse(localStorage.getItem("lists")) || [];
+            savedLists.forEach(list => {
+                addList(list.title, list.tasks, list.color, list.categoryId);
+            });
+        } catch (error) {
+            console.error("Error al cargar las listas:", error);
+            localStorage.removeItem("lists");  // Opcional: Borrar el JSON corrupto
+        }
     }
-
     // Guardar todas las categorías en localStorage
     function saveCategories() {
         const categoriesData = Array.from(categoriesContainer.children).map(category => ({
@@ -325,7 +328,12 @@ function addTask(taskList, taskText) {
 
     // Cargar categorías desde localStorage
     function loadCategories() {
-        const savedCategories = JSON.parse(localStorage.getItem("categories")) || [];
-        savedCategories.forEach(category => addCategory(category.name));
+        try {
+            const savedCategories = JSON.parse(localStorage.getItem("categories")) || [];
+            savedCategories.forEach(category => addCategory(category.name));
+        } catch (error) {
+            console.error("Error al cargar las categorías:", error);
+            localStorage.removeItem("categories");  // Elimina los datos corruptos
+        }
     }
 });
