@@ -52,13 +52,22 @@ html {
    
     overflow-y: auto; /* Agrega scroll si el contenido es muy largo */
     word-break: break-word;
+    
 }
 
 .list-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    
 }
+.list-categoria {
+    display: flex;
+    margin-top: 10px;
+    align-items: left;
+}
+
+
 
 .delete-list {
     background:  rgb(202, 28, 28);
@@ -66,6 +75,16 @@ html {
     border-radius: 2px;
     border: none;
     padding: 5px;
+    cursor: pointer;
+}
+
+.category-select {
+    width: 100%;
+    padding:4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
     cursor: pointer;
 }
 
@@ -271,7 +290,7 @@ html {
 }
 
 .delete-category {
-    background-color: red;
+    background-color: rgb(202, 28, 28);
     color: white;
     border: none;
     cursor: pointer;

@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
     addListButton.addEventListener("click", () => {
         const listTitle = prompt("Nombre de la nueva lista:");
         if (listTitle) {
-            addList(listTitle, [], "#f4f4f4"); // Eliminamos la opción de categoría
+            addList(listTitle, [], "#f4f4f4"); 
             saveLists();
         }
     });
@@ -30,14 +30,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Función para crear una nueva lista
+    // Función para crear una nueva LISTA-----------------------------------------------------------------
+
     function addList(title, tasks = [], color = "#f4f4f4", categoryId = null) { // Color predeterminado gris
 
         const list = document.createElement("div");
         list.classList.add("task-list");
         list.style.backgroundColor = color;  // Asigna el color de fondo (puede ser el predeterminado o uno personalizado)
 
-        const listHeader = document.createElement("div");
+        const listHeader = document.createElement("div");//div para el titulo y el delete
         listHeader.classList.add("list-header");
 
         const listTitle = document.createElement("h3");
@@ -51,8 +52,45 @@ document.addEventListener("DOMContentLoaded", function () {
             saveLists();
         });
 
+
+        list.appendChild(listHeader);
         listHeader.appendChild(listTitle);
         listHeader.appendChild(deleteButton);
+
+
+     // Nuevo div para la lista desplegable de categoría
+        const categoryContainer = document.createElement("div");
+        categoryContainer.classList.add("list-categoria");
+
+        const categorySelect = document.createElement("select");
+        categorySelect.classList.add("category-select");
+
+        const defaultOption = document.createElement("option");
+        defaultOption.textContent = "Seleccionar categoría";
+        defaultOption.value = "";
+        categorySelect.appendChild(defaultOption);
+
+        // Agregar opciones de categorías dinámicamente
+        function updateCategoryOptions() {
+            categorySelect.innerHTML = "";
+            categorySelect.appendChild(defaultOption);
+            document.querySelectorAll(".category h3").forEach(category => {
+                const option = document.createElement("option");
+                option.textContent = category.textContent;
+                option.value = category.textContent;
+                categorySelect.appendChild(option);
+            });
+        }
+
+        updateCategoryOptions();
+        document.addEventListener("categoryAdded", updateCategoryOptions);
+        document.addEventListener("categoryRemoved", updateCategoryOptions);
+
+        categoryContainer.appendChild(categorySelect);
+        list.appendChild(categoryContainer);
+       
+
+       
 
         // Contenedor para el SELECTOR DE COLOR y el texto
         const colorContainer = document.createElement("div");
@@ -100,6 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
         colorContainer.appendChild(colorLabel);
         colorContainer.appendChild(colorPickerContainer);  // Usamos colorPickerContainer que ahora tiene el input
 
+        // Contenedor de TEXTO DE LA TAREA
         const taskInput = document.createElement("input");
         taskInput.type = "text";
         taskInput.placeholder = "Agregar una tarea...";
@@ -138,8 +177,13 @@ document.addEventListener("DOMContentLoaded", function () {
         saveLists();
     }
 
+
+
+
+
+
     
-// Función para crear una nueva tarea
+// Función para crear una nueva TAREA----------------------------------------------------
 function addTask(taskList, taskText) {
     // Asegurarse de que taskText sea una cadena de texto antes de usar .trim()
     if (typeof taskText === 'string' && taskText.trim() === "") return;
@@ -242,55 +286,64 @@ function addTask(taskList, taskText) {
 }
 
     
-    // Función para crear una nueva categoría
-function addCategory(name) {
-    const category = document.createElement('div');
-    category.classList.add('category');
-    const categoryId = `category-${Date.now()}`;
-    category.setAttribute('id', categoryId);
-
-    // Contenedor para el título y el botón
-    const categoryHeader = document.createElement('div');
-    categoryHeader.classList.add('category-header'); // Puedes agregar estilos en CSS
-
-    const categoryTitle = document.createElement('h3');
-    categoryTitle.textContent = name;
-
-    // Crear el botón de eliminar categoría dentro de la cabecera
-    const deleteCategoryButton = document.createElement('button');
-    deleteCategoryButton.textContent = 'X';
-    deleteCategoryButton.classList.add('delete-category');
-    deleteCategoryButton.addEventListener('click', (event) => {
-        event.stopPropagation();  // Evitar que se active el evento de mostrar las listas al hacer clic
-        category.remove();
-        saveCategories();
-    });
-
-    // Agregar el título y el botón al contenedor de cabecera
-    categoryHeader.appendChild(categoryTitle);
-    categoryHeader.appendChild(deleteCategoryButton);
-
-    // Agregar la cabecera a la categoría
-    category.appendChild(categoryHeader);
-
-    // Contenedor de listas dentro de la categoría
-    const categoryLists = document.createElement('div');
-    categoryLists.classList.add('category-lists');
-    category.appendChild(categoryLists);
-
-    // Evento para mostrar las listas de la categoría y redirigir a la página correspondiente
-    category.addEventListener('click', () => {
-        const categoryName = categoryTitle.textContent;
-        // Redirigir a la página de la categoría
-        window.location.href = `category.html?category=${encodeURIComponent(categoryName)}`;
-    });
-
-    categoriesContainer.appendChild(category);
-}
 
 
 
-    // Guardar todas las listas en localStorage
+
+
+ // Función para crear una nueva CATEGORIA------------------------------------------------------------
+    function addCategory(name) {
+        const category = document.createElement('div');
+        category.classList.add('category');
+        const categoryId = `category-${Date.now()}`;
+        category.setAttribute('id', categoryId);
+
+        // Contenedor para el título y el botón
+        const categoryHeader = document.createElement('div');
+        categoryHeader.classList.add('category-header'); // Puedes agregar estilos en CSS
+
+        const categoryTitle = document.createElement('h3');
+        categoryTitle.textContent = name;
+
+        // Crear el botón de eliminar categoría dentro de la cabecera
+        const deleteCategoryButton = document.createElement('button');
+        deleteCategoryButton.textContent = 'X';
+        deleteCategoryButton.classList.add('delete-category');
+        deleteCategoryButton.addEventListener('click', (event) => {
+            event.stopPropagation();  // Evitar que se active el evento de mostrar las listas al hacer clic
+            category.remove();
+            saveCategories();
+        });
+
+        // Agregar el título y el botón al contenedor de cabecera
+        categoryHeader.appendChild(categoryTitle);
+        categoryHeader.appendChild(deleteCategoryButton);
+
+        // Agregar la cabecera a la categoría
+        category.appendChild(categoryHeader);
+
+        // Contenedor de listas dentro de la categoría
+        const categoryLists = document.createElement('div');
+        categoryLists.classList.add('category-lists');
+        category.appendChild(categoryLists);
+
+        // Evento para mostrar las listas de la categoría y redirigir a la página correspondiente
+        category.addEventListener('click', () => {
+            const categoryName = categoryTitle.textContent;
+            // Redirigir a la página de la categoría
+            window.location.href = `category.html?category=${encodeURIComponent(categoryName)}`;
+        });
+
+        categoriesContainer.appendChild(category);
+    }
+
+
+
+
+
+
+
+    // Guardar todas las listas en localStorage----------------------------------------------------------
     function saveLists() {
         const listsData = Array.from(listsContainer.children).map(list => ({
             title: list.querySelector("h3").textContent,
@@ -314,7 +367,7 @@ function addCategory(name) {
             });
         } catch (error) {
             console.error("Error al cargar las listas:", error);
-            localStorage.removeItem("lists");  // Opcional: Borrar el JSON corrupto
+            localStorage.removeItem("lists");  //  Borrar el JSON corrupto
         }
     }
     // Guardar todas las categorías en localStorage
