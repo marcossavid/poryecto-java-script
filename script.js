@@ -3,8 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const addListButton = document.getElementById("add-list"); //const del boton
     const listNameInput = document.getElementById ("list-name-input"); // const del input
 
-    const categoryInput = document.getElementById('category-input');
-    const addCategorySubmit = document.getElementById('add-category-button');
+    const categoryinput = document.getElementById('category-input');
     const categoriesContainer = document.getElementById('categories');
     const addCategoryButton = document.getElementById('add-category');
     
@@ -28,10 +27,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Evento para añadir una nueva categoría
     addCategoryButton.addEventListener("click", () => {
-        const categoryName = prompt("Nombre de la nueva categoría:");
+        const categoryName = categoryinput.value.trim();
         if (categoryName) {
             addCategory(categoryName);
             saveCategories();
+            categoryinput.value = "";
+        }
+        else {
+            alert("Ingresa una categoria");
         }
     });
 
@@ -305,7 +308,7 @@ function addTask(taskList, taskText) {
 
         // Contenedor para el título y el botón
         const categoryHeader = document.createElement('div');
-        categoryHeader.classList.add('category-header'); // Puedes agregar estilos en CSS
+        categoryHeader.classList.add('category-header'); 
 
         const categoryTitle = document.createElement('h3');
         categoryTitle.textContent = name;
