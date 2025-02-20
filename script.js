@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const listsContainer = document.getElementById("lists-container");
-    const addListButton = document.getElementById("add-list");
+    const listsContainer = document.getElementById("lists-container"); //const del contenedor de listas
+    const addListButton = document.getElementById("add-list"); //const del boton
+    const listNameInput = document.getElementById ("list-name-input"); // const del input
+
     const categoryInput = document.getElementById('category-input');
     const addCategorySubmit = document.getElementById('add-category-button');
     const categoriesContainer = document.getElementById('categories');
@@ -12,12 +14,15 @@ document.addEventListener("DOMContentLoaded", function () {
     loadLists(); // Cargar listas guardadas al iniciar
     loadCategories(); //Cargar categorias
     
-    // Evento para añadir una nueva lista
+    // Evento del boton para añadir una nueva lista
     addListButton.addEventListener("click", () => {
-        const listTitle = prompt("Nombre de la nueva lista:");
+        const listTitle = listNameInput.value.trim(); 
         if (listTitle) {
-            addList(listTitle, [], "#f4f4f4"); 
+            addList(listTitle, [], "#f4f4f4"); // Llama a la función con el título ingresado
             saveLists();
+            listNameInput.value = ""; // Limpia el input después de agregar la lista
+        } else {
+            alert("Por favor, ingresa un nombre para la lista."); // Mensaje de validación
         }
     });
 
