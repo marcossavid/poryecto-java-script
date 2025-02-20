@@ -27,21 +27,25 @@ html {
     
 }
 
-.container {
+.container { /*CONTENEDIR DE LISTAS general*/
     width: 90%;
     margin: auto;
     text-align: center;
     
 }
 
-#lists-container {
+
+#lists-container {/*contendedor de listas*/
+   
+    margin-left: 250px;
+    padding: 20px;
+    flex-wrap: wrap;
     display: flex;
     gap: 20px;
-    flex-wrap: wrap;
-    margin-top: 16px;
-}
+  }
 
-.task-list {
+
+.task-list { /*lsta*/
     width: 300px;
     height: 500px;
     background: #e6e6e6;
@@ -54,6 +58,20 @@ html {
     word-break: break-word;
     
 }
+
+.add-listp {   /*btn agregar lista*/
+    background: rgb(56, 56, 224);
+    color: white;
+    border: none;
+    padding: 16px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    margin-top: 40px;
+    border-radius: 4px;
+}
+
+
+
 
 .list-header {
     display: flex;
@@ -174,16 +192,7 @@ html {
 
 }
 
-.add-listp {
-    background: rgb(56, 56, 224);
-    color: white;
-    border: none;
-    padding: 16px;
-    cursor: pointer;
-    margin-bottom: 16px;
-    margin-top: 40px;
-    border-radius: 4px;
-}
+
 
 /* Contenedor del selector de color y su texto */
 .color-container {
@@ -260,11 +269,6 @@ html {
   
 
   
-  #lists-container {
-    margin-left: 250px;
-    padding: 20px;
-  }
-
 
 
 .category {

@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     
     loadLists(); // Cargar listas guardadas al iniciar
-    loadCategories();
+    loadCategories(); //Cargar categorias
     
     // Evento para añadir una nueva lista
     addListButton.addEventListener("click", () => {
