@@ -42,8 +42,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function addList(title, tasks = [], color = "#f4f4f4", categoryId = null) { // Color predeterminado gris
 
-        const list = document.createElement("div");
-        list.classList.add("task-list");
+        const list = document.createElement("div"); //creamos un div
+        list.classList.add("task-list"); //le asignamos la clase
         list.style.backgroundColor = color;  // Asigna el color de fondo (puede ser el predeterminado o uno personalizado)
 
         const listHeader = document.createElement("div");//div para el titulo y el delete
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
         listHeader.appendChild(deleteButton);
 
 
-     // Nuevo div para la lista desplegable de categoría
+     // Nuevo div para la lista desplegable de categoría dentro de la lista
         const categoryContainer = document.createElement("div");
         categoryContainer.classList.add("list-categoria");
 
@@ -174,6 +174,9 @@ document.addEventListener("DOMContentLoaded", function () {
         list.appendChild(addTaskButton);
         list.appendChild(taskList);
 
+
+
+
         // Si hay una categoría seleccionada, asignar la lista a esa categoría
         if (categoryId) {
             const category = document.getElementById(categoryId);
@@ -181,6 +184,12 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             listsContainer.appendChild(list); // Si no hay categoría, agregarla al contenedor principal
         }
+
+        const mensaje = document.createElement("p");
+        mensaje.style.color= "gray";
+        mensaje.innerText = "Puedes arrastrar y cambiar el orden de las tereas";
+        mensaje.style.fontSize = "12px";
+        list.appendChild(mensaje);
 
         saveLists();
     }
@@ -202,7 +211,7 @@ function addTask(taskList, taskText) {
 
     // Contenedor para la tarea que contendrá tanto el texto como los botones
     const taskContainer = document.createElement("div");
-    taskContainer.classList.add("task-container");
+    taskContainer.classList.add("task-container"); 
 
     // Contenedor para el texto de la tarea
     const taskTextContainer = document.createElement("div");
@@ -216,7 +225,7 @@ function addTask(taskList, taskText) {
 
     // Botón de eliminar
     const deleteTaskButton = document.createElement("button");
-    deleteTaskButton.textContent = "Eliminar";
+    deleteTaskButton.textContent = "X";
     deleteTaskButton.classList.add("delete-task");
     deleteTaskButton.addEventListener("click", () => {
         taskItem.remove();
@@ -225,7 +234,7 @@ function addTask(taskList, taskText) {
 
     // Botón de hecho
     const hechoTaskButton = document.createElement('button');
-    hechoTaskButton.textContent = 'Hecho';
+    hechoTaskButton.textContent = '✓';
     hechoTaskButton.classList.add('hecho-task');
 
     // Estado inicial de la tarea
@@ -234,7 +243,7 @@ function addTask(taskList, taskText) {
     hechoTaskButton.addEventListener('click', () => {
         if (taskTextContainer.dataset.done === "false") {
             taskTextContainer.style.textDecoration = 'line-through'; // Tacha el texto
-            taskTextContainer.style.color = '#a0a0a0'; // Cambia el color del texto
+            taskTextContainer.style.color = 'rgb(182, 182, 182)'; // Cambia el color del texto
             taskTextContainer.dataset.done = "true"; // Cambia el estado
         } else {
             taskTextContainer.style.textDecoration = 'none'; // Restaura el texto

@@ -41,7 +41,7 @@ html {
 }
 
 
-#lists-container {/*contendedor de listas*/
+#lists-container {/*contendedor de listas GENERAL*/
    
     margin-left: 250px;
     padding: 20px;
@@ -51,7 +51,7 @@ html {
   }
 
 
-.task-list { /*lsta*/
+.task-list { /* CONTENEDOR DE lsta INVIDIDUAL*/
     width: 300px;
     height: 500px;
     background: #e6e6e6;
@@ -92,13 +92,13 @@ html {
 
 
 
-.list-header {
+.list-header { /*HEAD DE LA LISTA*/
     display: flex;
     justify-content: space-between;
     align-items: center;
     
 }
-.list-categoria {
+.list-categoria { /*BORRAR LISTA*/
     display: flex;
     margin-top: 10px;
     align-items: left;
@@ -106,7 +106,7 @@ html {
 
 
 
-.delete-list {
+.delete-list { /*BORRAR LISTA*/
     background:  rgb(202, 28, 28);
     color: white;
     border-radius: 2px;
@@ -115,7 +115,7 @@ html {
     cursor: pointer;
 }
 
-.category-select {
+.category-select { /*SELECTOR DE CATEGORIA DENTRO DE LA LISTA*/
     width: 100%;
     padding:4px;
     border: 1px solid #ccc;
@@ -125,13 +125,14 @@ html {
     cursor: pointer;
 }
 
-.task-input {
+.task-input { /*EL INPUT DE CREAR TAREA DENTRO DE LA LISTA*/
     width: 90%;
     padding: 5px;
     margin: 5px 0;
+    
 }
 
-.add-task {
+.add-task { /*BTN DE AGREGAR TAREA*/
     background:rgb(56, 56, 224);
     color: white;
     border: none;
@@ -144,10 +145,14 @@ html {
     border-radius: 4px;
 }
 
-.task-items {
+
+
+.task-items { 
     list-style: none;
     padding: 0;
+    
 }
+
 
 .task-items li {
     display: flex;
@@ -179,6 +184,7 @@ html {
     flex: 1; /* El texto ocupará todo el espacio disponible */
     padding-right: 10px; /* Espacio entre el texto y el botón */
     background-color: #fafafa;
+    
 }
 
 .buttons-container {
@@ -239,6 +245,12 @@ html {
     border-radius: 5px;
     display: inline-block;
 }
+
+
+
+
+
+
 
 
 
