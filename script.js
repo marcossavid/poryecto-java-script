@@ -7,12 +7,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const categoriesContainer = document.getElementById('categories');
     const addCategoryButton = document.getElementById('add-category');
     
-
-
-    
+   
     loadLists(); // Cargar listas guardadas al iniciar
     loadCategories(); //Cargar categorias
     
+  
     // Evento del boton para añadir una nueva lista
     addListButton.addEventListener("click", () => {
         const listTitle = listNameInput.value.trim(); 
@@ -20,6 +19,15 @@ document.addEventListener("DOMContentLoaded", function () {
             addList(listTitle, [], "#f4f4f4"); // Llama a la función con el título ingresado
             saveLists();
             listNameInput.value = ""; // Limpia el input después de agregar la lista
+            Toastify({
+                text: "Nueva lista agregada",
+                duration: 3000, // Duración en milisegundos
+                gravity: "bottom", // Posición vertical (top / bottom)
+                position: "right", // Posición horizontal (left / center / right)
+                style: {
+                    background: "linear-gradient(to right,rgb(78, 184, 169),rgb(91, 61, 201))", // Color de fondo
+                }
+            }).showToast();
         } else {
             alert("Por favor, ingresa un nombre para la lista."); // Mensaje de validación
         }
@@ -187,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const mensaje = document.createElement("p");
         mensaje.style.color= "gray";
-        mensaje.innerText = "Puedes arrastrar y cambiar el orden de las tereas";
+        mensaje.innerText = "Puedes arrastrar y cambiar el orden de las tereas presionando sobre el texto";
         mensaje.style.fontSize = "12px";
         list.appendChild(mensaje);
 
@@ -207,11 +215,11 @@ function addTask(taskList, taskText) {
 
     // Crear un nuevo elemento de tarea
     const taskItem = document.createElement("li");
-    taskItem.classList.add("task-item");
+    taskItem.classList.add("task-item"); //Esta clase la debo revisar
 
     // Contenedor para la tarea que contendrá tanto el texto como los botones
     const taskContainer = document.createElement("div");
-    taskContainer.classList.add("task-container"); 
+    taskContainer.classList.add("task-container"); //Esta clase la debo revisar
 
     // Contenedor para el texto de la tarea
     const taskTextContainer = document.createElement("div");
@@ -237,24 +245,42 @@ function addTask(taskList, taskText) {
     hechoTaskButton.textContent = '✓';
     hechoTaskButton.classList.add('hecho-task');
 
+
+
     // Estado inicial de la tarea
     taskTextContainer.dataset.done = "false"; //dataset representa le estado del item
 
+ 
     hechoTaskButton.addEventListener('click', () => {
+        
+
         if (taskTextContainer.dataset.done === "false") {
             taskTextContainer.style.textDecoration = 'line-through'; // Tacha el texto
-            taskTextContainer.style.color = 'rgb(182, 182, 182)'; // Cambia el color del texto
+            taskTextContainer.style.backgroundColor = 'rgb(145, 221, 157)'; // Cambia el fondo a verde
+            taskTextContainer.style.color = 'rgb(255, 255, 255)'; // Cambia el color del texto
             taskTextContainer.dataset.done = "true"; // Cambia el estado
+            Toastify({
+                text: "Tarea completada",
+                duration: 3000, // Duración en milisegundos
+                gravity: "bottom", // Posición vertical (top / bottom)
+                position: "right", // Posición horizontal (left / center / right)
+                style: {
+                    background: "linear-gradient(to right,rgb(22, 151, 71),#4CAF50)", // Color de fondo
+                }
+            }).showToast();
+           
         } else {
             taskTextContainer.style.textDecoration = 'none'; // Restaura el texto
             taskTextContainer.style.color = ''; // Vuelve al color original
+            taskTextContainer.style.backgroundColor = ''; // Restaura el fondo original
             taskTextContainer.dataset.done = "false"; // Cambia el estado
         }
         
         saveLists();
     });
-
-
+   
+   
+    
     // Agregar los botones al contenedor de botones
     buttonsContainer.appendChild(deleteTaskButton);
     buttonsContainer.appendChild(hechoTaskButton);
@@ -267,36 +293,39 @@ function addTask(taskList, taskText) {
     taskItem.appendChild(taskContainer);
     taskList.appendChild(taskItem);
 
+
+
     // Eventos de Drag and Drop solo para el texto
     taskTextContainer.addEventListener("dragstart", (e) => {
-        draggedItem = taskItem;
-        setTimeout(() => taskItem.classList.add("dragging"), 0);
+        draggedItem = taskItem; // Al iniciar el arrastre, guarda el elemento arrastrado en `draggedItem
+        setTimeout(() => taskItem.classList.add("dragging"), 0); // Se usa `setTimeout` para permitir que el evento `dragging` se active después de que el arrastre haya comenzado
     });
 
     taskTextContainer.addEventListener("dragend", () => {
-        taskItem.classList.remove("dragging");
-        draggedItem = null;
+        taskItem.classList.remove("dragging"); // Cuando se suelta el elemento, se remueve la clase `dragging`
+        draggedItem = null; // Se limpia la variable `draggedItem` para evitar referencias incorrectas
         saveLists();
     });
 
     // Permite el arrastre sobre la lista
     taskList.addEventListener("dragover", (e) => {
-        e.preventDefault(); // Permite soltar elementos aquí
-        const afterElement = getDragAfterElement(taskList, e.clientY);
-        if (afterElement == null) {
+        e.preventDefault(); // // Evita el comportamiento predeterminado que impide soltar elementos en la lista
+        const afterElement = getDragAfterElement(taskList, e.clientY); // Obtiene el elemento más cercano al punto donde se está soltando el elemento arrastrado
+        
+        if (afterElement == null) { // Si no hay un elemento después, se agrega el elemento arrastrado al final de la lista
             taskList.appendChild(draggedItem);
-        } else {
+        } else { // Si hay un elemento después, se inserta antes de este
             taskList.insertBefore(draggedItem, afterElement);
         }
     });
 
     function getDragAfterElement(container, y) {
-        const draggableElements = [...container.querySelectorAll(".task-item:not(.dragging)")];
+        const draggableElements = [...container.querySelectorAll(".task-item:not(.dragging)")]; // Selecciona todos los elementos arrastrables en la lista, excepto el que se está arrastrando
         return draggableElements.reduce((closest, child) => {
-            const box = child.getBoundingClientRect();
-            const offset = y - box.top - box.height / 2;
-            return offset < 0 && offset > closest.offset ? { offset, element: child } : closest;
-        }, { offset: Number.NEGATIVE_INFINITY }).element;
+            const box = child.getBoundingClientRect(); // Obtiene el tamaño y posición del elemento en la lista
+            const offset = y - box.top - box.height / 2; // Calcula la diferencia entre la posición Y del mouse y la mitad del elemento
+            return offset < 0 && offset > closest.offset ? { offset, element: child } : closest; // Si el mouse está por encima del elemento pero no demasiado alto, este es el más cercano
+        }, { offset: Number.NEGATIVE_INFINITY }).element; // Devuelve el elemento más cercano
     }
 
     saveLists();
@@ -406,4 +435,11 @@ function addTask(taskList, taskText) {
             localStorage.removeItem("categories");  // Elimina los datos corruptos
         }
     }
+
+
+
+
+
+
+
 });

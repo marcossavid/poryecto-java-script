@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    color: rgb(30, 30, 30);
+    color: rgb(41, 41, 41);
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -8,7 +8,7 @@ body {
     
 }
 html {
-    background: linear-gradient(to right, rgb(45, 45, 182), #b13387);
+    background: linear-gradient(to right, rgb(128, 128, 252), #fc79d0);
 }
 
 #banner {
@@ -28,8 +28,23 @@ html {
 }
 
 
-
-
+.contenedor-de-contadores {
+    display: flex;
+    margin-left: 270px;
+    gap: 20px;
+}
+.contenedor-contadortareas {
+    text-align: center;
+    align-items: center;
+    display: flex;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    height: 25px;
+    background-color: #ffffff;
+    border-radius: 4px;
+}
 
 
 
@@ -51,19 +66,7 @@ html {
   }
 
 
-.task-list { /* CONTENEDOR DE lsta INVIDIDUAL*/
-    width: 300px;
-    height: 500px;
-    background: #e6e6e6;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    overflow-y: auto;
-   
-    overflow-y: auto; /* Agrega scroll si el contenido es muy largo */
-    word-break: break-word;
-    
-}
+
 
 .add-listp {   /*btn agregar lista*/
     background: rgb(56, 56, 224);
@@ -85,10 +88,19 @@ html {
     
 }
 
-
-
-
-
+.task-list { /* CONTENEDOR DE lsta INVIDIDUAL*/
+    width: 260px;
+    height: 500px;
+    background: #e6e6e6;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+   
+    overflow-y: auto; /* Agrega scroll si el contenido es muy largo */
+    word-break: break-word;
+    
+}
 
 
 
@@ -147,12 +159,11 @@ html {
 
 
 
-.task-items { 
+.task-items { /*Este es el contenedor que contiene los contenedores de todas las tareas individuales de una lista*/
     list-style: none;
     padding: 0;
     
 }
-
 
 .task-items li {
     display: flex;
@@ -180,10 +191,11 @@ html {
     border-radius: 4px;
 
 }
-.task-text {
+.task-text { /*Este es el contenedor del texto de la tarea*/
+
     flex: 1; /* El texto ocupará todo el espacio disponible */
-    padding-right: 10px; /* Espacio entre el texto y el botón */
-    background-color: #fafafa;
+    padding: 8px;
+    background-color: #e6e6e6;
     
 }
 
@@ -208,7 +220,7 @@ html {
 }
 
 .hecho-task {
-    background: rgb(28, 202, 54);
+    background: #4CAF50;
     color: white;
     border: none;
     cursor: pointer;
@@ -307,7 +319,7 @@ html {
   #categories { 
     display: flex;
     flex-direction: column;
-    color: black;
+    color: rgb(41, 41, 41);
     position: relative;
     
     

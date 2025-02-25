@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <!--sweetalert2-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- CSS de Toastify (para los estilos de las notificaciones) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <!-- JavaScript de Toastify -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!--gsap-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
     <title>Lista de Tareas</title>
 </head>
 <body>
@@ -15,10 +24,20 @@
         <div>
             <input type="text" id="list-name-input" placeholder="Nombre de la nueva lista">
             <button id="add-list" class="add-listp">Crear una nueva lista</button>
+            <div class="contenedor-de-contadores">
+                <div class = "contenedor-contadortareas">
+                    <p>Total de tareas: <span id="total-tasks" style="font-weight: bold; color: rgb(41, 41, 41);">0</span> </p>
+                </div> 
+                <div class = "contenedor-contadortareas">
+                    <p>Tareas completadas: <span id="completed-tasks" style="font-weight: bold; color: #4CAF50">0</span></p>
+                </div>
+            </div>
+       
         </div>
         
 
         <div id="lists-container"></div>
+        
     </div>
 
     <!-- CATEGORÍAS -->
@@ -35,9 +54,11 @@
         <div id="categories">
             <!-- Las categorías se agregarán aquí dinámicamente -->
         </div>
-
+        
       
     </div>
+
+
     
     <script src="script.js"></script>
 </body>
