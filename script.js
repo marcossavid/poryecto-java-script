@@ -7,12 +7,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const categoriesContainer = document.getElementById('categories');
     const addCategoryButton = document.getElementById('add-category');
     
-   
+
     loadLists(); // Cargar listas guardadas al iniciar
     loadCategories(); //Cargar categorias
     
+ 
+
+
+
+
   
-    // Evento del boton para añadir una nueva lista
+    // Evento del boton para añadir una nueva lista----------------------------------------------------------
+
     addListButton.addEventListener("click", () => {
         const listTitle = listNameInput.value.trim(); 
         if (listTitle) {
@@ -45,6 +51,10 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Ingresa una categoria");
         }
     });
+
+
+
+
 
     // Función para crear una nueva LISTA-----------------------------------------------------------------
 
@@ -104,9 +114,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         categoryContainer.appendChild(categorySelect);
         list.appendChild(categoryContainer);
-       
-
-       
 
         // Contenedor para el SELECTOR DE COLOR y el texto
         const colorContainer = document.createElement("div");
@@ -155,21 +162,21 @@ document.addEventListener("DOMContentLoaded", function () {
         colorContainer.appendChild(colorPickerContainer);  // Usamos colorPickerContainer que ahora tiene el input
 
         // Contenedor de TEXTO DE LA TAREA
-        const taskInput = document.createElement("input");
+        const taskInput = document.createElement("input"); //TASKINPUT----
         taskInput.type = "text";
         taskInput.placeholder = "Agregar una tarea...";
         taskInput.classList.add("task-input");
 
-        const addTaskButton = document.createElement("button");
+        const addTaskButton = document.createElement("button"); //ADDTASKBUTTON----
         addTaskButton.textContent = "Agregar tarea";
         addTaskButton.classList.add("add-task");
 
-        const taskList = document.createElement("ul");
+        const taskList = document.createElement("ul"); //TASKLIST------
         taskList.classList.add("task-items");
 
         // CARGAR TAREAS PREEXISTENTES
         tasks.forEach(task => addTask(taskList, task));
-
+        
         addTaskButton.addEventListener("click", () => {
             addTask(taskList, taskInput.value);
             taskInput.value = "";
@@ -181,8 +188,6 @@ document.addEventListener("DOMContentLoaded", function () {
         list.appendChild(taskInput);
         list.appendChild(addTaskButton);
         list.appendChild(taskList);
-
-
 
 
         // Si hay una categoría seleccionada, asignar la lista a esa categoría
@@ -202,6 +207,8 @@ document.addEventListener("DOMContentLoaded", function () {
         saveLists();
     }
 
+//------------------------------------------------------------------------------------------
+
 
 
 
@@ -210,9 +217,10 @@ document.addEventListener("DOMContentLoaded", function () {
     
 // Función para crear una nueva TAREA----------------------------------------------------
 function addTask(taskList, taskText) {
+
     // Asegurarse de que taskText sea una cadena de texto antes de usar .trim()
     if (typeof taskText === 'string' && taskText.trim() === "") return;
-
+    
     // Crear un nuevo elemento de tarea
     const taskItem = document.createElement("li");
     taskItem.classList.add("task-item"); //Esta clase la debo revisar
@@ -238,6 +246,7 @@ function addTask(taskList, taskText) {
     deleteTaskButton.addEventListener("click", () => {
         taskItem.remove();
         saveLists();
+        //ACA PUEDE IR UN CONTADOR()--;
     });
 
     // Botón de hecho
@@ -255,6 +264,7 @@ function addTask(taskList, taskText) {
         
 
         if (taskTextContainer.dataset.done === "false") {
+            
             taskTextContainer.style.textDecoration = 'line-through'; // Tacha el texto
             taskTextContainer.style.backgroundColor = 'rgb(145, 221, 157)'; // Cambia el fondo a verde
             taskTextContainer.style.color = 'rgb(255, 255, 255)'; // Cambia el color del texto
@@ -268,18 +278,22 @@ function addTask(taskList, taskText) {
                     background: "linear-gradient(to right,rgb(22, 151, 71),#4CAF50)", // Color de fondo
                 }
             }).showToast();
-           
+            //ACA PUEDE IR UN CONTADOR()++;
+            
+          
         } else {
             taskTextContainer.style.textDecoration = 'none'; // Restaura el texto
             taskTextContainer.style.color = ''; // Vuelve al color original
             taskTextContainer.style.backgroundColor = ''; // Restaura el fondo original
             taskTextContainer.dataset.done = "false"; // Cambia el estado
+           
+            //ACA PUEDE IR UN CONTADOR()--;
         }
         
         saveLists();
     });
    
-   
+  
     
     // Agregar los botones al contenedor de botones
     buttonsContainer.appendChild(deleteTaskButton);
@@ -327,11 +341,15 @@ function addTask(taskList, taskText) {
             return offset < 0 && offset > closest.offset ? { offset, element: child } : closest; // Si el mouse está por encima del elemento pero no demasiado alto, este es el más cercano
         }, { offset: Number.NEGATIVE_INFINITY }).element; // Devuelve el elemento más cercano
     }
-
+  
     saveLists();
+    
 }
 
-    
+//--------------------------------------------------------------------------------------
+
+
+
 
 
 
@@ -383,8 +401,11 @@ function addTask(taskList, taskText) {
         categoriesContainer.appendChild(category);
     }
 
+//-----------------------------------------------------------------------------------------------------
 
 
+
+    
 
 
 
@@ -404,18 +425,33 @@ function addTask(taskList, taskText) {
         localStorage.setItem("lists", JSON.stringify(listsData));
     }
 
+
     // Cargar listas desde localStorage
     function loadLists() {
         try {
             const savedLists = JSON.parse(localStorage.getItem("lists")) || [];
+            let totalTasks = 0; // Inicializa el contador de tareas CONTADORRR-------
             savedLists.forEach(list => {
                 addList(list.title, list.tasks, list.color, list.categoryId);
+                totalTasks += list.tasks.length; // Suma la cantidad de tareas de cada lista CONTADORRR---
             });
+
+            updateTaskCounter(totalTasks); // Actualiza el contador en la UI CONTADORRRR---
+
         } catch (error) {
             console.error("Error al cargar las listas:", error);
             localStorage.removeItem("lists");  //  Borrar el JSON corrupto
         }
+       
     }
+     // Función para actualizar el contador de tareas en la interfaz CONTADORRR---
+     function updateTaskCounter(count) {
+        document.getElementById("task-count").textContent = count;
+    }
+    // Llamar a loadLists() al cargar la página CONTADORRRR-----
+    document.addEventListener("DOMContentLoaded", loadLists);
+
+
     // Guardar todas las categorías en localStorage
     function saveCategories() {
         const categoriesData = Array.from(categoriesContainer.children).map(category => ({
