@@ -15,13 +15,14 @@ document.addEventListener("DOMContentLoaded", function () {
      function updateCompletetasks(contadorhecho){
         document.getElementById("completed-tasks").textContent= contadorhecho;
      }
-  
 
+     
+     
 // Cargar listas desde localStorage---------------------------------------------------------------------
 function loadLists() {
     try {
         const savedLists = JSON.parse(localStorage.getItem("lists")) || [];
-        let totalTasks = 0; // Inicializa el contador de tareas CONTADORRR-------
+        totalTasks = 0; 
         savedLists.forEach(list => {
             addList(list.title, list.tasks, list.color, list.categoryId);
             totalTasks += list.tasks.length; // Suma la cantidad de tareas de cada lista CONTADORRR---
@@ -30,7 +31,7 @@ function loadLists() {
         updateTaskCounter(totalTasks); // Actualiza el contador en la UI CONTADORRRR---
 
     } catch (error) {
-        console.error("Error al cargar las listas:", error);
+        alert("Error al cargar las listas:");
         localStorage.removeItem("lists");  //  Borrar el JSON corrupto
     }
    
@@ -219,10 +220,14 @@ function loadCategories() {
         // CARGAR TAREAS PREEXISTENTES
         tasks.forEach(task => addTask(taskList, task));
         
-        addTaskButton.addEventListener("click", () => {
-            addTask(taskList, taskInput.value);
-            taskInput.value = "";
-            saveLists();
+        addTaskButton.addEventListener("click", () => { //Evento del boton agregar tarea
+            if (taskInput.value.trim() !== "") {
+                addTask(taskList, taskInput.value);
+                taskInput.value = "";
+                totalTasks++; // Incrementar el total de tareas
+                updateTaskCounter(totalTasks); // Actualizar el contador de tareas en la UI
+                saveLists();
+            }
         });
 
         list.appendChild(listHeader);
@@ -254,12 +259,10 @@ function loadCategories() {
 
 
 
-
-
     
 // Función para crear una nueva TAREA----------------------------------------------------
 function addTask(taskList, taskText) {
-
+    
     // Asegurarse de que taskText sea una cadena de texto antes de usar .trim()
     if (typeof taskText === 'string' && taskText.trim() === "") return;
     
@@ -283,8 +286,11 @@ function addTask(taskList, taskText) {
 
     // Botón de eliminar
     const deleteTaskButton = document.createElement("button");
-    deleteTaskButton.textContent = "X";
     deleteTaskButton.classList.add("delete-task");
+    const iconDelete = document.createElement('i');
+    iconDelete.classList.add('fas', 'fa-trash'); // Clases de FontAwesome para el ícono de borrar
+    // Agregar el icono al botón de delete
+    deleteTaskButton.appendChild(iconDelete);
     deleteTaskButton.addEventListener("click", () => {
         taskItem.remove();
         saveLists();
@@ -293,10 +299,11 @@ function addTask(taskList, taskText) {
 
     // Botón de hecho
     const hechoTaskButton = document.createElement('button');
-    hechoTaskButton.textContent = '✓';
     hechoTaskButton.classList.add('hecho-task');
-
-
+    const icon = document.createElement('i');
+    icon.classList.add('fas', 'fa-check'); // Clases de FontAwesome para el check
+    // Agregar el icono al botón
+    hechoTaskButton.appendChild(icon);
 
     // Estado inicial de la tarea
     taskTextContainer.dataset.done = "false"; //dataset representa le estado del item
@@ -334,8 +341,7 @@ function addTask(taskList, taskText) {
             contadorhecho --;
             updateCompletetasks(contadorhecho);
         }
-        totalTasks++; // Sumar nueva tarea
-        updateTaskCounter(totalTasks);
+
         saveLists();
         
     });
@@ -353,7 +359,7 @@ function addTask(taskList, taskText) {
     // Agregar el contenedor de tarea al taskItem
     taskItem.appendChild(taskContainer);
     taskList.appendChild(taskItem);
-
+    
 
 
     // Eventos de Drag and Drop solo para el texto
@@ -388,7 +394,9 @@ function addTask(taskList, taskText) {
             return offset < 0 && offset > closest.offset ? { offset, element: child } : closest; // Si el mouse está por encima del elemento pero no demasiado alto, este es el más cercano
         }, { offset: Number.NEGATIVE_INFINITY }).element; // Devuelve el elemento más cercano
     }
-  
+    
+    
+    
     saveLists();
     
 }
@@ -397,18 +405,22 @@ function addTask(taskList, taskText) {
 
   // Guardar todas las listas en localStorage----------------------------------------------------------
   function saveLists() {
-    const listsData = Array.from(listsContainer.children).map(list => ({
-        title: list.querySelector("h3").textContent,
-        tasks: Array.from(list.querySelectorAll(".task-item")).map(task => {
-            const taskText = task.querySelector(".task-text").textContent.trim();
-            return taskText;  // Solo guardamos el texto de la tarea
-        }),
-        color: list.style.backgroundColor,
-        categoryId: list.closest(".category")?.id || null  // Guardamos el id de la categoría si existe
-    }));
+    const lists = [];
+    let totalTasks = 0;  // Inicializar contador
+    document.querySelectorAll(".task-list").forEach(list => {
+        const title = list.querySelector("h3").textContent;
+        const tasks = Array.from(list.querySelectorAll(".task-items li")).map(li => li.textContent);
+        const color = list.style.backgroundColor;
+        lists.push({ title, tasks, color });
 
-    localStorage.setItem("lists", JSON.stringify(listsData));
+        totalTasks += tasks.length;  // Sumar tareas de cada lista
+    });
+
+    localStorage.setItem("lists", JSON.stringify(lists));
+    localStorage.setItem("totalTasks", totalTasks);  // Guardar total de tareas en localStorage
+    updateTaskCounter(totalTasks);
 }
+
 
 
 
@@ -473,15 +485,6 @@ function saveCategories() {
     localStorage.setItem("categories", JSON.stringify(categoriesData));
 }
     
-
-
-
-
-   
-
-
-
-
 
 
 

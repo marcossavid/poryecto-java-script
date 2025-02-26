@@ -187,8 +187,10 @@ html {
     color: white;
     border: none;
     cursor: pointer;
-    margin-left: 10px; /* Separa el botón del texto */
+    padding: 4px;
     border-radius: 4px;
+    width: 20px;
+    height: 22px;
 
 }
 .task-text { /*Este es el contenedor del texto de la tarea*/
@@ -226,6 +228,9 @@ html {
     cursor: pointer;
     margin-left: 10px; /* Separa el botón del texto */
     border-radius: 4px;
+    padding: 4px;
+    width: 20px;
+    height: 22px;
 
 }
 
