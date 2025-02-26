@@ -11,8 +11,11 @@ document.addEventListener("DOMContentLoaded", function () {
     loadLists(); // Cargar listas guardadas al iniciar
     loadCategories(); //Cargar categorias
     
-
-
+     let contadorhecho = 0;
+     function updateCompletetasks(contadorhecho){
+        document.getElementById("completed-tasks").textContent= contadorhecho;
+     }
+  
 
 // Cargar listas desde localStorage---------------------------------------------------------------------
 function loadLists() {
@@ -318,7 +321,8 @@ function addTask(taskList, taskText) {
                 }
             }).showToast();
             //ACA PUEDE IR UN CONTADOR()++;
-            
+            contadorhecho ++;
+            updateCompletetasks(contadorhecho);
           
         } else {
             taskTextContainer.style.textDecoration = 'none'; // Restaura el texto
@@ -327,9 +331,13 @@ function addTask(taskList, taskText) {
             taskTextContainer.dataset.done = "false"; // Cambia el estado
            
             //ACA PUEDE IR UN CONTADOR()--;
+            contadorhecho --;
+            updateCompletetasks(contadorhecho);
         }
-        
+        totalTasks++; // Sumar nueva tarea
+        updateTaskCounter(totalTasks);
         saveLists();
+        
     });
    
   
