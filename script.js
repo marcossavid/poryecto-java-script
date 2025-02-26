@@ -11,13 +11,52 @@ document.addEventListener("DOMContentLoaded", function () {
     loadLists(); // Cargar listas guardadas al iniciar
     loadCategories(); //Cargar categorias
     
- 
+
+
+
+// Cargar listas desde localStorage---------------------------------------------------------------------
+function loadLists() {
+    try {
+        const savedLists = JSON.parse(localStorage.getItem("lists")) || [];
+        let totalTasks = 0; // Inicializa el contador de tareas CONTADORRR-------
+        savedLists.forEach(list => {
+            addList(list.title, list.tasks, list.color, list.categoryId);
+            totalTasks += list.tasks.length; // Suma la cantidad de tareas de cada lista CONTADORRR---
+        });
+
+        updateTaskCounter(totalTasks); // Actualiza el contador en la UI CONTADORRRR---
+
+    } catch (error) {
+        console.error("Error al cargar las listas:", error);
+        localStorage.removeItem("lists");  //  Borrar el JSON corrupto
+    }
+   
+}
+ // Función para actualizar el contador de tareas en la interfaz CONTADORRR---
+ function updateTaskCounter(count) {
+    document.getElementById("task-count").textContent = count;
+}
+// Llamar a loadLists() al cargar la página CONTADORRRR-----
+document.addEventListener("DOMContentLoaded", loadLists);
 
 
 
 
+// Cargar categorías desde localStorage--------------------------------------------------------------
+function loadCategories() {
+    try {
+        const savedCategories = JSON.parse(localStorage.getItem("categories")) || [];
+        savedCategories.forEach(category => addCategory(category.name));
+    } catch (error) {
+        console.error("Error al cargar las categorías:", error);
+        localStorage.removeItem("categories");  // Elimina los datos corruptos
+    }
+}
   
-    // Evento del boton para añadir una nueva lista----------------------------------------------------------
+
+
+
+// Evento del boton para añadir una nueva lista----------------------------------------------------------
 
     addListButton.addEventListener("click", () => {
         const listTitle = listNameInput.value.trim(); 
@@ -39,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Evento para añadir una nueva categoría
+// Evento para añadir una nueva categoría----------------------------------------------------------------
     addCategoryButton.addEventListener("click", () => {
         const categoryName = categoryinput.value.trim();
         if (categoryName) {
@@ -56,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    // Función para crear una nueva LISTA-----------------------------------------------------------------
+// Función para crear una nueva LISTA-----------------------------------------------------------------
 
     function addList(title, tasks = [], color = "#f4f4f4", categoryId = null) { // Color predeterminado gris
 
@@ -348,7 +387,20 @@ function addTask(taskList, taskText) {
 
 //--------------------------------------------------------------------------------------
 
+  // Guardar todas las listas en localStorage----------------------------------------------------------
+  function saveLists() {
+    const listsData = Array.from(listsContainer.children).map(list => ({
+        title: list.querySelector("h3").textContent,
+        tasks: Array.from(list.querySelectorAll(".task-item")).map(task => {
+            const taskText = task.querySelector(".task-text").textContent.trim();
+            return taskText;  // Solo guardamos el texto de la tarea
+        }),
+        color: list.style.backgroundColor,
+        categoryId: list.closest(".category")?.id || null  // Guardamos el id de la categoría si existe
+    }));
 
+    localStorage.setItem("lists", JSON.stringify(listsData));
+}
 
 
 
@@ -404,73 +456,20 @@ function addTask(taskList, taskText) {
 //-----------------------------------------------------------------------------------------------------
 
 
+// Guardar todas las categorías en localStorage------------------------------------------------------------
+function saveCategories() {
+    const categoriesData = Array.from(categoriesContainer.children).map(category => ({
+        name: category.querySelector("h3").textContent
+    }));
 
+    localStorage.setItem("categories", JSON.stringify(categoriesData));
+}
     
 
 
 
 
-    // Guardar todas las listas en localStorage----------------------------------------------------------
-    function saveLists() {
-        const listsData = Array.from(listsContainer.children).map(list => ({
-            title: list.querySelector("h3").textContent,
-            tasks: Array.from(list.querySelectorAll(".task-item")).map(task => {
-                const taskText = task.querySelector(".task-text").textContent.trim();
-                return taskText;  // Solo guardamos el texto de la tarea
-            }),
-            color: list.style.backgroundColor,
-            categoryId: list.closest(".category")?.id || null  // Guardamos el id de la categoría si existe
-        }));
-
-        localStorage.setItem("lists", JSON.stringify(listsData));
-    }
-
-
-    // Cargar listas desde localStorage
-    function loadLists() {
-        try {
-            const savedLists = JSON.parse(localStorage.getItem("lists")) || [];
-            let totalTasks = 0; // Inicializa el contador de tareas CONTADORRR-------
-            savedLists.forEach(list => {
-                addList(list.title, list.tasks, list.color, list.categoryId);
-                totalTasks += list.tasks.length; // Suma la cantidad de tareas de cada lista CONTADORRR---
-            });
-
-            updateTaskCounter(totalTasks); // Actualiza el contador en la UI CONTADORRRR---
-
-        } catch (error) {
-            console.error("Error al cargar las listas:", error);
-            localStorage.removeItem("lists");  //  Borrar el JSON corrupto
-        }
-       
-    }
-     // Función para actualizar el contador de tareas en la interfaz CONTADORRR---
-     function updateTaskCounter(count) {
-        document.getElementById("task-count").textContent = count;
-    }
-    // Llamar a loadLists() al cargar la página CONTADORRRR-----
-    document.addEventListener("DOMContentLoaded", loadLists);
-
-
-    // Guardar todas las categorías en localStorage
-    function saveCategories() {
-        const categoriesData = Array.from(categoriesContainer.children).map(category => ({
-            name: category.querySelector("h3").textContent
-        }));
-
-        localStorage.setItem("categories", JSON.stringify(categoriesData));
-    }
-
-    // Cargar categorías desde localStorage
-    function loadCategories() {
-        try {
-            const savedCategories = JSON.parse(localStorage.getItem("categories")) || [];
-            savedCategories.forEach(category => addCategory(category.name));
-        } catch (error) {
-            console.error("Error al cargar las categorías:", error);
-            localStorage.removeItem("categories");  // Elimina los datos corruptos
-        }
-    }
+   
 
 
 
