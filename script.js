@@ -293,6 +293,9 @@ function addTask(taskList, taskText) {
     deleteTaskButton.appendChild(iconDelete);
     deleteTaskButton.addEventListener("click", () => {
         taskItem.remove();
+        contadorhecho --;
+        updateCompletetasks(contadorhecho);
+        
         saveLists();
         //ACA PUEDE IR UN CONTADOR()--;
     });
