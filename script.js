@@ -27,7 +27,7 @@ function loadLists() {
             addList(list.title, list.tasks, list.color, list.categoryId);
             totalTasks += list.tasks.length; // Suma la cantidad de tareas de cada lista CONTADORRR---
         });
-
+        
         updateTaskCounter(totalTasks); // Actualiza el contador en la UI CONTADORRRR---
 
     } catch (error) {
@@ -293,8 +293,10 @@ function addTask(taskList, taskText) {
     deleteTaskButton.appendChild(iconDelete);
     deleteTaskButton.addEventListener("click", () => {
         taskItem.remove();
+        if (taskTextContainer.dataset.done === "true") {
         contadorhecho --;
         updateCompletetasks(contadorhecho);
+        }
         
         saveLists();
         //ACA PUEDE IR UN CONTADOR()--;
