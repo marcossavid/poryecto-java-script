@@ -28,7 +28,7 @@ function loadLists() {
             totalTasks += list.tasks.length; // Suma la cantidad de tareas de cada lista CONTADORRR---
         });
         
-        updateTaskCounter(totalTasks); // Actualiza el contador en la UI CONTADORRRR---
+        updateTaskCounter(totalTasks); // Actualiza el contador en la UI CONTADORRRRrrrrrr---
 
     } catch (error) {
         alert("Error al cargar las listas:");
