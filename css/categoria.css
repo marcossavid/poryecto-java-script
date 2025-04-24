@@ -1,0 +1,96 @@
+/*CATEGORIAS*/
+
+#category-sidebar {   /*LA BARRA GENERAL*/
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #2d2d3b;
+    padding: 10px;
+    box-shadow: 2px 0 5px rgba(51, 51, 51, 0.1);
+    display: flex; /* Usamos Flexbox para alinear las categorías */
+    flex-wrap: wrap; /* Permitimos que las categorías se envuelvan a la siguiente fila si es necesario */
+    gap: 20px; /* Espacio entre las categorías */
+    justify-content: center; /* Alineamos*/
+    border: 2px solid #2d2d3b; /* Esto te ayudará a ver el contenedor */
+    align-content: start;
+  }
+
+  .inp-btn-category {  /*contenedor de btn y input*/
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  #category-input { /*input*/
+    width: 230px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    border-color: #ccc;
+}
+  
+  #add-category { /* EL BOTON VERDE*/
+    display: block;
+    margin-bottom: 20px;
+    height: 50px;
+    width: 230px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    align-content: center;
+    text-align: center;
+  }
+  
+  #categories { 
+    display: flex;
+    flex-direction: column;
+    color: rgb(41, 41, 41);
+    
+    position: relative;
+    
+    
+  }
+  
+
+  
+
+
+.category {
+    width: 200px; /* Establecemos un ancho fijo para cada categoría */
+    height: 50px;
+    background-color: #f4f4f4; /* Color de fondo opcional */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 8px;
+    
+}
+
+.category-header { /* modifica la categoria*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    
+}
+
+.category-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #414141;
+}
+
+.delete-category {
+    background-color: rgb(226, 226, 226);
+    color: rgb(133, 133, 133);
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+}

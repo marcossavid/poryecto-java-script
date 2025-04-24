@@ -1,145 +1,116 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const listsContainer = document.getElementById("lists-container"); //const del contenedor de listas
-    const addListButton = document.getElementById("add-list"); //const del boton
-    const listNameInput = document.getElementById ("list-name-input"); // const del input
-
+    const listsContainer = document.getElementById("lists-container");
+    const addListButton = document.getElementById("add-list");
+    const listNameInput = document.getElementById("list-name-input");
     const categoryinput = document.getElementById('category-input');
     const categoriesContainer = document.getElementById('categories');
     const addCategoryButton = document.getElementById('add-category');
-    
 
-    loadLists(); // Cargar listas guardadas al iniciar
-    loadCategories(); //Cargar categorias
-    
-     let contadorhecho = 0;
-     function updateCompletetasks(contadorhecho){
-        document.getElementById("completed-tasks").textContent= contadorhecho;
-     }
+    loadLists();
+    loadCategories();
 
-     
-     
-// Cargar listas desde localStorage---------------------------------------------------------------------
-function loadLists() {
-    try {
-        const savedLists = JSON.parse(localStorage.getItem("lists")) || [];
-        totalTasks = 0; 
-        savedLists.forEach(list => {
-            addList(list.title, list.tasks, list.color, list.categoryId);
-            totalTasks += list.tasks.length; // Suma la cantidad de tareas de cada lista CONTADORRR---
-        });
-        
-        updateTaskCounter(totalTasks); // Actualiza el contador en la UI CONTADORRRRrrrrrr---
+    let contadorhecho = parseInt(localStorage.getItem("completedTasks")) || 0; // Cargar contador al inicio
+    updateCompletetasks(contadorhecho);
 
-    } catch (error) {
-        alert("Error al cargar las listas:");
-        localStorage.removeItem("lists");  //  Borrar el JSON corrupto
+    function updateCompletetasks(count) {
+        document.getElementById("completed-tasks").textContent = count;
     }
-   
-}
- // Función para actualizar el contador de tareas en la interfaz CONTADORRR---
- function updateTaskCounter(count) {
-    document.getElementById("task-count").textContent = count;
-}
-// Llamar a loadLists() al cargar la página CONTADORRRR-----
-document.addEventListener("DOMContentLoaded", loadLists);
 
-
-
-
-// Cargar categorías desde localStorage--------------------------------------------------------------
-function loadCategories() {
-    try {
-        const savedCategories = JSON.parse(localStorage.getItem("categories")) || [];
-        savedCategories.forEach(category => addCategory(category.name));
-    } catch (error) {
-        console.error("Error al cargar las categorías:", error);
-        localStorage.removeItem("categories");  // Elimina los datos corruptos
+    function updateTaskCounter(count) {
+        document.getElementById("task-count").textContent = count;
     }
-}
-  
 
+    function loadLists() {
+        try {
+            const savedLists = JSON.parse(localStorage.getItem("lists")) || [];
+            let totalTasks = 0;
+            let completedTasksCount = parseInt(localStorage.getItem("completedTasks")) || 0; // Cargar contador de completadas
+    
+            savedLists.forEach(listData => {
+                const listElement = addList(listData.title, listData.color, listData.categoryId);
+                totalTasks += listData.tasks.length; // Sumar la cantidad de tareas de cada lista AL CARGAR
+                listData.tasks.forEach(taskData => {
+                    const taskItem = addTask(listElement.querySelector(".task-items"), taskData.text, taskData.done);
+                });
+            });
+            updateTaskCounter(totalTasks);
+            updateCompletetasks(completedTasksCount);
+    
+        } catch (error) {
+            alert("Error al cargar las listas:");
+            localStorage.removeItem("lists");
+            localStorage.removeItem("totalTasks"); // Limpiar también el contador total en caso de error
+            localStorage.removeItem("completedTasks"); // Limpiar también el contador de completadas en caso de error
+            updateTaskCounter(0);
+            updateCompletetasks(0);
+        }
+    }
 
-
-// Evento del boton para añadir una nueva lista----------------------------------------------------------
+    function loadCategories() {
+        try {
+            const savedCategories = JSON.parse(localStorage.getItem("categories")) || [];
+            savedCategories.forEach(category => addCategory(category.name));
+        } catch (error) {
+            console.error("Error al cargar las categorías:", error);
+            localStorage.removeItem("categories");
+        }
+    }
 
     addListButton.addEventListener("click", () => {
-        const listTitle = listNameInput.value.trim(); 
+        const listTitle = listNameInput.value.trim();
         if (listTitle) {
-            addList(listTitle, [], "#f4f4f4"); // Llama a la función con el título ingresado
+            addList(listTitle);
             saveLists();
-            listNameInput.value = ""; // Limpia el input después de agregar la lista
-            Toastify({
-                text: "Nueva lista agregada",
-                duration: 3000, // Duración en milisegundos
-                gravity: "bottom", // Posición vertical (top / bottom)
-                position: "right", // Posición horizontal (left / center / right)
-                style: {
-                    background: "linear-gradient(to right,rgb(78, 184, 169),rgb(91, 61, 201))", // Color de fondo
-                }
-            }).showToast();
+            listNameInput.value = "";
+            Toastify({ text: "Nueva lista agregada", duration: 3000, gravity: "bottom", position: "right", style: { background: "linear-gradient(to right,rgb(78, 184, 169),rgb(91, 61, 201))" } }).showToast();
         } else {
-            alert("Por favor, ingresa un nombre para la lista."); // Mensaje de validación
+            alert("Por favor, ingresa un nombre para la lista.");
         }
     });
 
-// Evento para añadir una nueva categoría----------------------------------------------------------------
     addCategoryButton.addEventListener("click", () => {
         const categoryName = categoryinput.value.trim();
         if (categoryName) {
             addCategory(categoryName);
             saveCategories();
             categoryinput.value = "";
-        }
-        else {
+        } else {
             alert("Ingresa una categoria");
         }
     });
 
+    function addList(title, color = "#f4f4f4", categoryId = null) {
+        const list = document.createElement("div");
+        list.className = "task-list";
+        list.style.backgroundColor = color;
 
-
-
-
-// Función para crear una nueva LISTA-----------------------------------------------------------------
-
-    function addList(title, tasks = [], color = "#f4f4f4", categoryId = null) { // Color predeterminado gris
-
-        const list = document.createElement("div"); //creamos un div
-        list.classList.add("task-list"); //le asignamos la clase
-        list.style.backgroundColor = color;  // Asigna el color de fondo (puede ser el predeterminado o uno personalizado)
-
-        const listHeader = document.createElement("div");//div para el titulo y el delete
-        listHeader.classList.add("list-header");
+        const listHeader = document.createElement("div");
+        listHeader.className = "list-header";
 
         const listTitle = document.createElement("h3");
         listTitle.textContent = title;
 
         const deleteButton = document.createElement("button");
         deleteButton.textContent = "X";
-        deleteButton.classList.add("delete-list");
+        deleteButton.className = "delete-list";
         deleteButton.addEventListener("click", () => {
             list.remove();
             saveLists();
         });
 
+        listHeader.append(listTitle, deleteButton);
 
-        list.appendChild(listHeader);
-        listHeader.appendChild(listTitle);
-        listHeader.appendChild(deleteButton);
-
-
-     // Nuevo div para la lista desplegable de categoría dentro de la lista
         const categoryContainer = document.createElement("div");
-        categoryContainer.classList.add("list-categoria");
+        categoryContainer.className = "list-categoria";
 
         const categorySelect = document.createElement("select");
-        categorySelect.classList.add("category-select");
+        categorySelect.className = "category-select";
 
         const defaultOption = document.createElement("option");
         defaultOption.textContent = "Seleccionar categoría";
         defaultOption.value = "";
         categorySelect.appendChild(defaultOption);
 
-        // Agregar opciones de categorías dinámicamente
         function updateCategoryOptions() {
             categorySelect.innerHTML = "";
             categorySelect.appendChild(defaultOption);
@@ -156,341 +127,224 @@ function loadCategories() {
         document.addEventListener("categoryRemoved", updateCategoryOptions);
 
         categoryContainer.appendChild(categorySelect);
-        list.appendChild(categoryContainer);
 
-        // Contenedor para el SELECTOR DE COLOR y el texto
         const colorContainer = document.createElement("div");
-        colorContainer.classList.add("color-container");
+        colorContainer.className = "color-container";
 
-        // Texto "Color de fondo"
         const colorLabel = document.createElement("label");
         colorLabel.textContent = "Color de fondo: ";
-        colorLabel.classList.add("color-label");
+        colorLabel.className = "color-label";
 
-        // Crear un contenedor que tenga una imagen
         const colorPickerContainer = document.createElement("div");
-        colorPickerContainer.classList.add("custom-color-picker-container");
+        colorPickerContainer.className = "custom-color-picker-container";
+        colorPickerContainer.style.backgroundImage = `url('imgs/sdr.png')`;
+        colorPickerContainer.style.backgroundSize = "cover";
+        colorPickerContainer.style.width = "30px";
+        colorPickerContainer.style.height = "30px";
+        colorPickerContainer.style.cursor = "pointer";
 
-        // Crear el input tipo color pero ocultarlo
         const colorPicker = document.createElement("input");
         colorPicker.type = "color";
-        colorPicker.value = color;  // Valor inicial del color
-        colorPicker.classList.add("color-picker");
-        colorPicker.style.display = "none";  // Ocultar el input de tipo color
+        colorPicker.value = color;
+        colorPicker.className = "color-picker";
+        colorPicker.style.display = "none";
 
-        // Establecer un fondo de imagen en el contenedor para que se vea como un selector
-        colorPickerContainer.style.backgroundImage = `url('imgs/sdr.png')`; 
-        colorPickerContainer.style.backgroundSize = "cover";  // Asegurar de que la imagen cubra el área
-        colorPickerContainer.style.width = "30px";  
-        colorPickerContainer.style.height = "30px"; 
-        colorPickerContainer.style.cursor = "pointer"; // Establecer que el contenedor sea clickeable
-
-        // Agregar el evento para mostrar el input tipo color cuando se hace clic en el contenedor
-        colorPickerContainer.addEventListener("click", () => {
-            colorPicker.click();  // Esto abrirá el selector de color
-        });
-
-        // Cuando el usuario selecciona un color, actualizar el fondo de la lista y el color del contenedor
+        colorPickerContainer.addEventListener("click", () => colorPicker.click());
         colorPicker.addEventListener("input", (event) => {
-            list.style.backgroundColor = event.target.value; // Cambiar el fondo al color elegido
-            colorPickerContainer.style.backgroundColor = event.target.value; // Cambiar el color de fondo del contenedor
-            saveLists();  // Guardar el nuevo estado
+            list.style.backgroundColor = event.target.value;
+            colorPickerContainer.style.backgroundColor = event.target.value;
+            saveLists();
         });
 
-        // Agregar el input (el selector de color) dentro del colorPickerContainer
         colorPickerContainer.appendChild(colorPicker);
+        colorContainer.append(colorLabel, colorPickerContainer);
 
-        // Ahora agregar el contenedor de colorPickerContainer con el label en colorContainer
-        colorContainer.appendChild(colorLabel);
-        colorContainer.appendChild(colorPickerContainer);  // Usamos colorPickerContainer que ahora tiene el input
-
-        // Contenedor de TEXTO DE LA TAREA
-        const taskInput = document.createElement("input"); //TASKINPUT----
+        const taskInput = document.createElement("input");
         taskInput.type = "text";
         taskInput.placeholder = "Agregar una tarea...";
-        taskInput.classList.add("task-input");
+        taskInput.className = "task-input";
 
-        const addTaskButton = document.createElement("button"); //ADDTASKBUTTON----
+        const addTaskButton = document.createElement("button");
         addTaskButton.textContent = "Agregar tarea";
-        addTaskButton.classList.add("add-task");
+        addTaskButton.className = "add-task";
 
-        const taskList = document.createElement("ul"); //TASKLIST------
-        taskList.classList.add("task-items");
+        const taskList = document.createElement("ul");
+        taskList.className = "task-items";
 
-        // CARGAR TAREAS PREEXISTENTES
-        tasks.forEach(task => addTask(taskList, task));
-        
-        addTaskButton.addEventListener("click", () => { //Evento del boton agregar tarea
-            if (taskInput.value.trim() !== "") {
-                addTask(taskList, taskInput.value);
+        addTaskButton.addEventListener("click", () => {
+            const taskText = taskInput.value.trim();
+            if (taskText) {
+                addTask(taskList, taskText);
                 taskInput.value = "";
-                totalTasks++; // Incrementar el total de tareas
-                updateTaskCounter(totalTasks); // Actualizar el contador de tareas en la UI
+                updateTaskCounter(parseInt(document.getElementById("task-count").textContent) + 1);
                 saveLists();
             }
         });
 
-        list.appendChild(listHeader);
-        list.appendChild(colorContainer);  // Agregar el contenedor con el label y el selector de color
-        list.appendChild(taskInput);
-        list.appendChild(addTaskButton);
-        list.appendChild(taskList);
+        list.append(listHeader, categoryContainer, colorContainer, taskInput, addTaskButton, taskList);
 
-
-        // Si hay una categoría seleccionada, asignar la lista a esa categoría
         if (categoryId) {
             const category = document.getElementById(categoryId);
             category.querySelector(".category-lists").appendChild(list);
         } else {
-            listsContainer.appendChild(list); // Si no hay categoría, agregarla al contenedor principal
+            listsContainer.appendChild(list);
         }
 
-        const mensaje = document.createElement("p");
-        mensaje.style.color= "gray";
-        mensaje.innerText = "Puedes arrastrar y cambiar el orden de las tereas presionando sobre el texto";
-        mensaje.style.fontSize = "12px";
-        list.appendChild(mensaje);
+        const message = document.createElement("p");
+        message.style.color = "gray";
+        message.innerText = "Puedes arrastrar y cambiar el orden de las tereas presionando sobre el texto";
+        message.style.fontSize = "12px";
+        list.appendChild(message);
 
-        saveLists();
+        return list;
     }
 
-//------------------------------------------------------------------------------------------
+    function addTask(taskList, taskText, done = false) {
+        if (!taskText.trim()) return;
 
+        const taskItem = document.createElement("li");
+        taskItem.className = "task-item";
 
+        const taskContainer = document.createElement("div");
+        taskContainer.className = "task-container";
 
-
-    
-// Función para crear una nueva TAREA----------------------------------------------------
-function addTask(taskList, taskText) {
-    
-    // Asegurarse de que taskText sea una cadena de texto antes de usar .trim()
-    if (typeof taskText === 'string' && taskText.trim() === "") return;
-    
-    // Crear un nuevo elemento de tarea
-    const taskItem = document.createElement("li");
-    taskItem.classList.add("task-item"); //Esta clase la debo revisar
-
-    // Contenedor para la tarea que contendrá tanto el texto como los botones
-    const taskContainer = document.createElement("div");
-    taskContainer.classList.add("task-container"); //Esta clase la debo revisar
-
-    // Contenedor para el texto de la tarea
-    const taskTextContainer = document.createElement("div");
-    taskTextContainer.classList.add("task-text");
-    taskTextContainer.textContent = taskText;
-    taskTextContainer.setAttribute("draggable", "true");  // El texto será draggable
-
-    // Contenedor para los botones (Eliminar y Hecho)
-    const buttonsContainer = document.createElement("div");
-    buttonsContainer.classList.add("buttons-container");
-
-    // Botón de eliminar
-    const deleteTaskButton = document.createElement("button");
-    deleteTaskButton.classList.add("delete-task");
-    const iconDelete = document.createElement('i');
-    iconDelete.classList.add('fas', 'fa-trash'); // Clases de FontAwesome para el ícono de borrar
-    // Agregar el icono al botón de delete
-    deleteTaskButton.appendChild(iconDelete);
-    deleteTaskButton.addEventListener("click", () => {
-        taskItem.remove();
-        if (taskTextContainer.dataset.done === "true") {
-        contadorhecho --;
-        updateCompletetasks(contadorhecho);
-        }
-        
-        saveLists();
-        //ACA PUEDE IR UN CONTADOR()--;
-    });
-
-    // Botón de hecho
-    const hechoTaskButton = document.createElement('button');
-    hechoTaskButton.classList.add('hecho-task');
-    const icon = document.createElement('i');
-    icon.classList.add('fas', 'fa-check'); // Clases de FontAwesome para el check
-    // Agregar el icono al botón
-    hechoTaskButton.appendChild(icon);
-
-    // Estado inicial de la tarea
-    taskTextContainer.dataset.done = "false"; //dataset representa le estado del item
-
- 
-    hechoTaskButton.addEventListener('click', () => {
-        
-
-        if (taskTextContainer.dataset.done === "false") {
-            
-            taskTextContainer.style.textDecoration = 'line-through'; // Tacha el texto
-            taskTextContainer.style.backgroundColor = 'rgb(145, 221, 157)'; // Cambia el fondo a verde
-            taskTextContainer.style.color = 'rgb(255, 255, 255)'; // Cambia el color del texto
-            taskTextContainer.dataset.done = "true"; // Cambia el estado
-            Toastify({
-                text: "Tarea completada",
-                duration: 3000, // Duración en milisegundos
-                gravity: "bottom", // Posición vertical (top / bottom)
-                position: "right", // Posición horizontal (left / center / right)
-                style: {
-                    background: "linear-gradient(to right,rgb(22, 151, 71),#4CAF50)", // Color de fondo
-                }
-            }).showToast();
-            //ACA PUEDE IR UN CONTADOR()++;
-            contadorhecho ++;
-            updateCompletetasks(contadorhecho);
-          
-        } else {
-            taskTextContainer.style.textDecoration = 'none'; // Restaura el texto
-            taskTextContainer.style.color = ''; // Vuelve al color original
-            taskTextContainer.style.backgroundColor = ''; // Restaura el fondo original
-            taskTextContainer.dataset.done = "false"; // Cambia el estado
-           
-            //ACA PUEDE IR UN CONTADOR()--;
-            contadorhecho --;
-            updateCompletetasks(contadorhecho);
+        const taskTextContainer = document.createElement("div");
+        taskTextContainer.className = "task-text";
+        taskTextContainer.textContent = taskText;
+        taskTextContainer.draggable = true;
+        taskTextContainer.dataset.done = done;
+        if (done) {
+            taskTextContainer.style.textDecoration = 'line-through';
+            taskTextContainer.style.backgroundColor = 'rgb(145, 221, 157)';
+            taskTextContainer.style.color = 'rgb(255, 255, 255)';
         }
 
-        saveLists();
-        
-    });
-   
-  
-    
-    // Agregar los botones al contenedor de botones
-    buttonsContainer.appendChild(deleteTaskButton);
-    buttonsContainer.appendChild(hechoTaskButton);
+        const buttonsContainer = document.createElement("div");
+        buttonsContainer.className = "buttons-container";
 
-    // Agregar el texto de la tarea y los botones al contenedor principal
-    taskContainer.appendChild(taskTextContainer);
-    taskContainer.appendChild(buttonsContainer);  // Los botones se mantienen estáticos
+        const deleteTaskButton = document.createElement("button");
+        deleteTaskButton.className = "delete-task";
+        deleteTaskButton.innerHTML = '<i class="fas fa-trash"></i>';
+        deleteTaskButton.addEventListener("click", () => {
+            const wasDone = taskTextContainer.dataset.done === "true";
+            taskItem.remove();
+            if (wasDone) {
+                contadorhecho--;
+                updateCompletetasks(contadorhecho);
+            }
+            updateTaskCounter(parseInt(document.getElementById("task-count").textContent) - 1);
+            saveLists();
+        });
 
-    // Agregar el contenedor de tarea al taskItem
-    taskItem.appendChild(taskContainer);
-    taskList.appendChild(taskItem);
-    
+        const hechoTaskButton = document.createElement('button');
+        hechoTaskButton.className = 'hecho-task';
+        hechoTaskButton.innerHTML = '<i class="fas fa-check"></i>';
+        hechoTaskButton.addEventListener('click', () => {
+            const isDone = taskTextContainer.dataset.done === "true";
+            taskTextContainer.dataset.done = !isDone;
+            taskTextContainer.style.textDecoration = isDone ? 'none' : 'line-through';
+            taskTextContainer.style.backgroundColor = isDone ? '' : 'rgb(145, 221, 157)';
+            taskTextContainer.style.color = isDone ? '' : 'rgb(255, 255, 255)';
+            Toastify({ text: isDone ? "Tarea pendiente" : "Tarea completada", duration: 3000, gravity: "bottom", position: "right", style: { background: isDone ? "linear-gradient(to right, #ffc107, #ff9800)" : "linear-gradient(to right,rgb(22, 151, 71),#4CAF50)" } }).showToast();
+            contadorhecho += isDone ? -1 : 1;
+            updateCompletetasks(contadorhecho);
+            saveLists();
+        });
 
+        buttonsContainer.append(deleteTaskButton, hechoTaskButton);
+        taskContainer.append(taskTextContainer, buttonsContainer);
+        taskItem.appendChild(taskContainer);
+        taskList.appendChild(taskItem);
 
-    // Eventos de Drag and Drop solo para el texto
-    taskTextContainer.addEventListener("dragstart", (e) => {
-        draggedItem = taskItem; // Al iniciar el arrastre, guarda el elemento arrastrado en `draggedItem
-        setTimeout(() => taskItem.classList.add("dragging"), 0); // Se usa `setTimeout` para permitir que el evento `dragging` se active después de que el arrastre haya comenzado
-    });
+        taskTextContainer.addEventListener("dragstart", (e) => {
+            draggedItem = taskItem;
+            setTimeout(() => taskItem.classList.add("dragging"), 0);
+        });
 
-    taskTextContainer.addEventListener("dragend", () => {
-        taskItem.classList.remove("dragging"); // Cuando se suelta el elemento, se remueve la clase `dragging`
-        draggedItem = null; // Se limpia la variable `draggedItem` para evitar referencias incorrectas
-        saveLists();
-    });
+        taskTextContainer.addEventListener("dragend", () => {
+            taskItem.classList.remove("dragging");
+            draggedItem = null;
+            saveLists();
+        });
 
-    // Permite el arrastre sobre la lista
-    taskList.addEventListener("dragover", (e) => {
-        e.preventDefault(); // // Evita el comportamiento predeterminado que impide soltar elementos en la lista
-        const afterElement = getDragAfterElement(taskList, e.clientY); // Obtiene el elemento más cercano al punto donde se está soltando el elemento arrastrado
-        
-        if (afterElement == null) { // Si no hay un elemento después, se agrega el elemento arrastrado al final de la lista
-            taskList.appendChild(draggedItem);
-        } else { // Si hay un elemento después, se inserta antes de este
+        taskList.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(taskList, e.clientY);
             taskList.insertBefore(draggedItem, afterElement);
+        });
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll(".task-item:not(.dragging)")];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                return offset < 0 && offset > closest.offset ? { offset, element: child } : closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
         }
-    });
 
-    function getDragAfterElement(container, y) {
-        const draggableElements = [...container.querySelectorAll(".task-item:not(.dragging)")]; // Selecciona todos los elementos arrastrables en la lista, excepto el que se está arrastrando
-        return draggableElements.reduce((closest, child) => {
-            const box = child.getBoundingClientRect(); // Obtiene el tamaño y posición del elemento en la lista
-            const offset = y - box.top - box.height / 2; // Calcula la diferencia entre la posición Y del mouse y la mitad del elemento
-            return offset < 0 && offset > closest.offset ? { offset, element: child } : closest; // Si el mouse está por encima del elemento pero no demasiado alto, este es el más cercano
-        }, { offset: Number.NEGATIVE_INFINITY }).element; // Devuelve el elemento más cercano
+        return taskItem;
     }
-    
-    
-    
-    saveLists();
-    
-}
 
-//--------------------------------------------------------------------------------------
+    function saveLists() {
+        const lists = Array.from(document.querySelectorAll(".task-list")).map(list => ({
+            title: list.querySelector("h3").textContent,
+            color: list.style.backgroundColor,
+            categoryId: list.querySelector(".category-select")?.value || null,
+            tasks: Array.from(list.querySelectorAll(".task-items li")).map(li => ({
+                text: li.querySelector(".task-text").textContent,
+                done: li.querySelector(".task-text").dataset.done === "true"
+            }))
+        }));
+        localStorage.setItem("lists", JSON.stringify(lists));
+        const totalTasks = lists.reduce((sum, list) => sum + list.tasks.length, 0);
+        const completedTasks = lists.reduce((sum, list) => sum + list.tasks.filter(task => task.done).length, 0);
+        localStorage.setItem("totalTasks", totalTasks);
+        localStorage.setItem("completedTasks", completedTasks);
+        updateTaskCounter(totalTasks);
+        updateCompletetasks(completedTasks);
+    }
 
-  // Guardar todas las listas en localStorage----------------------------------------------------------
-  function saveLists() {
-    const lists = [];
-    let totalTasks = 0;  // Inicializar contador
-    document.querySelectorAll(".task-list").forEach(list => {
-        const title = list.querySelector("h3").textContent;
-        const tasks = Array.from(list.querySelectorAll(".task-items li")).map(li => li.textContent);
-        const color = list.style.backgroundColor;
-        lists.push({ title, tasks, color });
-
-        totalTasks += tasks.length;  // Sumar tareas de cada lista
-    });
-
-    localStorage.setItem("lists", JSON.stringify(lists));
-    localStorage.setItem("totalTasks", totalTasks);  // Guardar total de tareas en localStorage
-    updateTaskCounter(totalTasks);
-}
-
-
-
-
-
-
-
- // Función para crear una nueva CATEGORIA------------------------------------------------------------
     function addCategory(name) {
         const category = document.createElement('div');
-        category.classList.add('category');
+        category.className = 'category';
         const categoryId = `category-${Date.now()}`;
-        category.setAttribute('id', categoryId);
+        category.id = categoryId;
 
-        // Contenedor para el título y el botón
         const categoryHeader = document.createElement('div');
-        categoryHeader.classList.add('category-header'); 
+        categoryHeader.className = 'category-header';
 
         const categoryTitle = document.createElement('h3');
         categoryTitle.textContent = name;
 
-        // Crear el botón de eliminar categoría dentro de la cabecera
         const deleteCategoryButton = document.createElement('button');
         deleteCategoryButton.textContent = 'X';
-        deleteCategoryButton.classList.add('delete-category');
+        deleteCategoryButton.className = 'delete-category';
         deleteCategoryButton.addEventListener('click', (event) => {
-            event.stopPropagation();  // Evitar que se active el evento de mostrar las listas al hacer clic
+            event.stopPropagation();
             category.remove();
             saveCategories();
+            document.dispatchEvent(new CustomEvent('categoryRemoved'));
         });
 
-        // Agregar el título y el botón al contenedor de cabecera
-        categoryHeader.appendChild(categoryTitle);
-        categoryHeader.appendChild(deleteCategoryButton);
+        categoryHeader.append(categoryTitle, deleteCategoryButton);
 
-        // Agregar la cabecera a la categoría
-        category.appendChild(categoryHeader);
-
-        // Contenedor de listas dentro de la categoría
         const categoryLists = document.createElement('div');
-        categoryLists.classList.add('category-lists');
-        category.appendChild(categoryLists);
+        categoryLists.className = 'category-lists';
 
-        // Evento para mostrar las listas de la categoría y redirigir a la página correspondiente
+        category.append(categoryHeader, categoryLists);
+
         category.addEventListener('click', () => {
-            const categoryName = categoryTitle.textContent;
-            // Redirigir a la página de la categoría
-            window.location.href = `category.html?category=${encodeURIComponent(categoryName)}`;
+            window.location.href = `category.html?category=${encodeURIComponent(categoryTitle.textContent)}`;
         });
 
         categoriesContainer.appendChild(category);
+        document.dispatchEvent(new CustomEvent('categoryAdded'));
     }
 
-//-----------------------------------------------------------------------------------------------------
-
-
-// Guardar todas las categorías en localStorage------------------------------------------------------------
-function saveCategories() {
-    const categoriesData = Array.from(categoriesContainer.children).map(category => ({
-        name: category.querySelector("h3").textContent
-    }));
-
-    localStorage.setItem("categories", JSON.stringify(categoriesData));
-}
-    
-
-
-
+    function saveCategories() {
+        const categoriesData = Array.from(categoriesContainer.children).map(category => ({
+            name: category.querySelector("h3").textContent
+        }));
+        localStorage.setItem("categories", JSON.stringify(categoriesData));
+    }
 });
