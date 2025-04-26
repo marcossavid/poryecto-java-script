@@ -13,7 +13,7 @@ html {
 
 #banner {
 
-    background: linear-gradient(to right, rgb(57, 48, 105), #7a3b67);
+    background: linear-gradient(to right, rgb(255, 255, 255), #ffffff);
     background-size: cover;
     background-position: center;
     height: 100px; /* Altura del banner */
@@ -33,7 +33,7 @@ html {
     margin-left: 270px;
     gap: 20px;
 }
-.contenedor-contadortareas {
+.contador-tareas {
     text-align: center;
     align-items: center;
     display: flex;
@@ -42,10 +42,21 @@ html {
     padding-top: 8px;
     padding-bottom: 8px;
     height: 25px;
-    background-color: #ffffff;
     border-radius: 4px;
 }
+.contenedor-contadortareas-total {
+    background-color: #ffffff;
+    
+}
+.contenedor-contadortareas-hechas {
 
+    background-color: #4CAF50;
+    color: #ffffff;
+}
+.contenedor-contadortareas-pendientes {
+    background-color: #e9ca1e;
+    color: #ffffff;
+}
 
 
 .container { /*CONTENEDIR DE LISTAS general*/
@@ -78,6 +89,12 @@ html {
     margin-top: 40px;
     border-radius: 4px;
 }
+/* Estilos para el botón de crear nueva lista */
+#add-list:hover {
+    background-color: rgb(37, 37, 146); /* Un verde más oscuro al hacer hover */
+    color: white;
+    cursor: pointer;
+}
 
 #list-name-input {  /*INPUT*/
     width: 500px;
@@ -88,9 +105,16 @@ html {
     
 }
 
-.task-list { /* CONTENEDOR DE lsta INVIDIDUAL*/
+
+
+
+
+
+
+
+.task-list { /* CONTENEDOR DE lsta INVIDIDUAL-----------------------------------------------------------------*/
     width: 260px;
-    height: 500px;
+    height: 300px;
     background: #e6e6e6;
     padding: 16px;
     border-radius: 8px;
@@ -157,7 +181,12 @@ html {
     border-radius: 4px;
 }
 
-
+/* Estilos para el botón de agregar tarea dentro de cada lista */
+.add-task:hover {
+    background-color: rgb(37, 37, 146); /* Un azul más oscuro al hacer hover */
+    color: white;
+    cursor: pointer;
+}
 
 .task-items { /*Este es el contenedor que contiene los contenedores de todas las tareas individuales de una lista*/
     list-style: none;
@@ -183,8 +212,8 @@ html {
 }
 
 .delete-task {
-    background: rgb(202, 28, 28);
-    color: white;
+    background: rgb(219, 219, 219);
+    color: rgb(88, 88, 88);
     border: none;
     cursor: pointer;
     padding: 4px;
@@ -193,6 +222,13 @@ html {
     height: 22px;
 
 }
+/* Estilos para los botones de eliminar tarea */
+.delete-task:hover {
+    background-color: #d9534f; /* Un rojo más oscuro al hacer hover */
+    color: white;
+    cursor: pointer;
+}
+
 .task-text { /*Este es el contenedor del texto de la tarea*/
 
     flex: 1; /* El texto ocupará todo el espacio disponible */
@@ -222,8 +258,8 @@ html {
 }
 
 .hecho-task {
-    background: #4CAF50;
-    color: white;
+    background: rgb(219, 219, 219);
+    color: rgb(88, 88, 88);
     border: none;
     cursor: pointer;
     margin-left: 10px; /* Separa el botón del texto */
@@ -233,9 +269,29 @@ html {
     height: 22px;
 
 }
-
-
-
+/* Estilos para los botones de tarea hecha */
+.hecho-task:hover {
+    background-color: #5cb85c; /* Un verde más oscuro al hacer hover */
+    color: white;
+    cursor: pointer;
+}
+.details-task {
+    background: rgb(219, 219, 219);
+    color: rgb(88, 88, 88);
+    border: none;
+    cursor: pointer;
+    margin-left: 10px; /* Separa el botón del texto */
+    border-radius: 4px;
+    padding: 4px;
+    width: 20px;
+    height: 22px;
+}
+/* Estilos para los botones de detalles de la tarea */
+.details-task:hover {
+    background-color: rgb(56, 56, 224); /* Un azul claro más oscuro al hacer hover */
+    color: white;
+    cursor: pointer;
+}
 /* Contenedor del selector de color y su texto */
 .color-container {
     display: flex;
@@ -272,7 +328,7 @@ html {
 
 
 
-/*CATEGORIAS*/
+/*CATEGORIAS---------------------------------------------------------------------------------------------------*/
 
 #category-sidebar {   /*LA BARRA GENERAL*/
     position: fixed;
@@ -369,6 +425,10 @@ html {
     border-radius: 5px;
 }
 
+
+
+
+/*--------------------------------------------------------------*/
 
 
 

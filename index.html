@@ -4,65 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <!--sweetalert2-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- CSS de Toastify (para los estilos de las notificaciones) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <!-- JavaScript de Toastify -->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <!--gsap-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <title>Lista de Tareas</title>
 </head>
 <body>
 
-    <h1 style="color: rgb(255, 255, 255);" id="banner">Gestor de listas de tareas</h1>
+    <h1 style="color: rgb(48, 48, 48);" id="banner">Gestor de listas de tareas</h1>
 
-    <!--LISTAS-->
     <div class="container">
         <div>
             <input type="text" id="list-name-input" placeholder="Nombre de la nueva lista">
             <button id="add-list" class="add-listp">Crear una nueva lista</button>
             <div class="contenedor-de-contadores">
-                <div class = "contenedor-contadortareas">
+                <div class = "contenedor-contadortareas-total contador-tareas">
                     <p>Total de tareas: <span id="task-count" style="font-weight: bold; color: rgb(41, 41, 41);">0</span> </p>
-                </div> 
-                <div class = "contenedor-contadortareas">
-                    <p>Tareas completadas: <span id="completed-tasks" style="font-weight: bold; color: #4CAF50">0</span></p>
                 </div>
-                
-            </div>  
-       
+                <div class = "contenedor-contadortareas-pendientes contador-tareas">
+                    <p>Tareas pendientes: <span id="pending-tasks" style="font-weight: bold">0</span></p>
+                </div>
+                <div class = "contenedor-contadortareas-hechas contador-tareas">
+                    <p>Tareas completadas: <span id="completed-tasks" style="font-weight: bold">0</span></p>
+                </div>
+
+
+            </div>
         </div>
-        
+
 
         <div id="lists-container"></div>
-        
-    </div>
 
-    <!-- CATEGORÍAS -->
+    </div>
 
     <div id="category-sidebar">
         <div class="inp-btn-category">
             <input type="text" id="category-input" placeholder="Escribe el nombre de la categoría" >
-            
-            <div id="add-category">Agregar Categoría</div> <!--boton-->
 
-        </div>
-        
+            <div id="add-category">Agregar Categoría</div> </div>
+
 
         <div id="categories">
-            <!-- Las categorías se agregarán aquí dinámicamente -->
-        </div>
-        
-      
+            </div>
+
+
+    </div>
+    
+    <!--informacion de la tarea-->
+    <div id="task-details-panel" style="position: fixed; top: 0; right: -300px; width: 300px; height: 100%; background-color: #f9f9f9; box-shadow: -2px 0 5px rgba(0,0,0,0.1); transition: right 0.3s ease-in-out; padding: 20px; box-sizing: border-box; z-index: 1000;">
+        <h3>Detalles de la Tarea</h3>
+        <div id="task-details-content">
+            </div>
+        <button onclick="document.getElementById('task-details-panel').style.right = '-300px';" style="padding: 8px 15px; background-color: #ddd; border: none; cursor: pointer; margin-top: 15px;">Cerrar</button>
     </div>
 
 
-    
     <script src="script.js"></script>
 </body>
 </html>
